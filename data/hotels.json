@@ -1,0 +1,983 @@
+[
+  {
+    "id": "h1",
+    "name": "Baiyoke Sky Hotel Bangkok",
+    "city": "Bangkok",
+    "stars": 4,
+    "rating": 9,
+    "ratingLabel": "Great",
+    "reviewsCount": 3243,
+    "reviewQuote": "Great view, Delicious organic breakfast spread",
+    "address": "222 Ratchaprarop Rd, Ratchathewi, Bangkok 10400",
+    "lat": 13.7543,
+    "lng": 100.5404,
+    "ecoCertificates": [
+      "GSTC Certified",
+      "Green Leaf 5-Star"
+    ],
+    "ecoRating": "Green Leaf 5-Star",
+    "carbonRating": "-29.6% CO₂e/night",
+    "priceTHB": 2374,
+    "priceOriginalTHB": 3771,
+    "priceDiscountTHB": 2374,
+    "totalWithTaxesTHB": 2794,
+    "discountTag": "Special Discount 32% off",
+    "urgencyTag": "Last booked 24 mins ago",
+    "roomType": "Deluxe King Room",
+    "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+    "badge": "Green Leaf Certified",
+    "gallery": [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+    ],
+    "surroundings": {
+      "transit": "Ratchaprarop Airport Rail Link (250m)",
+      "landmark": "Pratunam Eco Market (300m)",
+      "airport": "22.5 KM from BKK"
+    },
+    "rooms": [
+      {
+        "id": "r1",
+        "name": "Deluxe King Room",
+        "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "1 king bed",
+        "view": "City view",
+        "size": "40m²",
+        "price": 2374,
+        "priceOriginal": 3771,
+        "ecoFeature": "100% Solar-heated Water",
+        "breakfast": "Organic Breakfast Included",
+        "plans": [
+          {
+            "title": "Lowest Price",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Non-refundable",
+            "isFreeCancel": false,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 2374,
+            "priceOriginal": 3771,
+            "totalWithTaxes": 2794
+          },
+          {
+            "title": "Free Cancellation",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "32% off Member deal",
+            "price": 2427,
+            "priceOriginal": 3771,
+            "totalWithTaxes": 2856
+          },
+          {
+            "title": "Pay at Hotel Flexible",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 2659,
+            "priceOriginal": 3120,
+            "totalWithTaxes": 3120
+          }
+        ]
+      },
+      {
+        "id": "r2",
+        "name": "Deluxe Twin Room",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "2 single beds",
+        "view": "City view",
+        "size": "40m²",
+        "price": 2427,
+        "priceOriginal": 3771,
+        "ecoFeature": "Filtered Water Station",
+        "breakfast": "Organic Breakfast Included",
+        "plans": [
+          {
+            "title": "Lowest price with free cancellation",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "32% off Member deal",
+            "price": 2427,
+            "priceOriginal": 3771,
+            "totalWithTaxes": 2856
+          },
+          {
+            "title": "Free cancellation",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 2659,
+            "priceOriginal": 3130,
+            "totalWithTaxes": 3130
+          },
+          {
+            "title": "Breakfast Included Deal",
+            "breakfast": "Includes 2 organic breakfasts",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "38% off Member deal",
+            "price": 2698,
+            "priceOriginal": 4621,
+            "totalWithTaxes": 3174
+          }
+        ]
+      },
+      {
+        "id": "r3",
+        "name": "Grand Deluxe Twin Room",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "2 single beds",
+        "view": "City view",
+        "size": "58m²",
+        "price": 2560,
+        "priceOriginal": 4497,
+        "ecoFeature": "Filtered Water Station",
+        "breakfast": "Organic Breakfast Included",
+        "plans": [
+          {
+            "title": "Special Member Deal",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "39% off Member deal",
+            "price": 2560,
+            "priceOriginal": 4497,
+            "totalWithTaxes": 3013
+          },
+          {
+            "title": "Breakfast and free cancellation",
+            "breakfast": "Includes 2 organic breakfasts",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "38% off Member deal",
+            "price": 3088,
+            "priceOriginal": 5305,
+            "totalWithTaxes": 3634
+          },
+          {
+            "title": "Free cancellation flex",
+            "breakfast": "Great organic breakfast for ฿530.00 (optional)",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 3134,
+            "priceOriginal": 3680,
+            "totalWithTaxes": 3680
+          }
+        ]
+      },
+      {
+        "id": "r11",
+        "name": "Executive Eco Suite",
+        "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 7,
+        "bed": "1 King Bed + Sofa Bed",
+        "view": "Panoramic Skyline View",
+        "size": "72m²",
+        "price": 3850,
+        "priceOriginal": 5800,
+        "ecoFeature": "Smart Energy HVAC Sensor",
+        "breakfast": "Includes Executive Club Lounge Breakfast",
+        "plans": [
+          {
+            "title": "Club Executive Package",
+            "breakfast": "Includes Executive Club Lounge Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "33% off Member deal",
+            "price": 3850,
+            "priceOriginal": 5800,
+            "totalWithTaxes": 4420
+          },
+          {
+            "title": "Pay at Hotel Option",
+            "breakfast": "Includes Executive Club Lounge Breakfast",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 4300,
+            "priceOriginal": 5800,
+            "totalWithTaxes": 4945
+          }
+        ]
+      },
+      {
+        "id": "r12",
+        "name": "Presidential Skyline Eco Suite",
+        "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 9,
+        "bed": "1 Super King Bed",
+        "view": "High Floor Skyline View",
+        "size": "110m²",
+        "price": 5900,
+        "priceOriginal": 9200,
+        "ecoFeature": "100% Zero Single-Use Plastic & Jacuzzi",
+        "breakfast": "Includes Premium Organic Breakfast & High Tea",
+        "plans": [
+          {
+            "title": "VIP Luxury Eco Deal",
+            "breakfast": "Includes Premium Organic Breakfast & High Tea",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "35% off VIP deal",
+            "price": 5900,
+            "priceOriginal": 9200,
+            "totalWithTaxes": 6780
+          }
+        ]
+      }
+    ],
+    "carbonMetrics": {
+      "actualCO2PerNight": 17.6,
+      "regionalBenchmark": 25,
+      "carbonSavedPerNight": 7.4,
+      "savingPercentage": 29.6,
+      "treesEquiv": 0.7,
+      "grossTotalCO2": 47531.85,
+      "lastUpdated": "2026-10"
+    }
+  },
+  {
+    "id": "h2",
+    "name": "Mercure Bangkok Surawong",
+    "city": "Bangkok",
+    "stars": 4,
+    "rating": 9,
+    "ratingLabel": "Great",
+    "reviewsCount": 2613,
+    "reviewQuote": "Friendly front desk staff, Great eco-city view",
+    "address": "Surawong Rd, Bang Rak, Bangkok 10500",
+    "lat": 13.7275,
+    "lng": 100.5281,
+    "ecoCertificates": [
+      "Carbon Neutral Certified",
+      "Zero Single-Use Plastic"
+    ],
+    "ecoRating": "Carbon Neutral",
+    "carbonRating": "-29.6% CO₂e/night",
+    "priceTHB": 1664,
+    "priceOriginalTHB": 1882,
+    "priceDiscountTHB": 1664,
+    "totalWithTaxesTHB": 1959,
+    "discountTag": "Limited Time Offer 10% off",
+    "urgencyTag": "Only 1 left at this price",
+    "roomType": "Classic Green Room",
+    "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+    "badge": "Zero Waste Certified",
+    "gallery": [
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+    ],
+    "surroundings": {
+      "transit": "Chong Nonsi BTS Station (650m)",
+      "landmark": "Chao Phraya River Park (800m)",
+      "airport": "25.1 KM from BKK"
+    },
+    "rooms": [
+      {
+        "id": "r10",
+        "name": "Classic Eco King Room",
+        "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "1 King Bed",
+        "view": "City view",
+        "size": "32m²",
+        "price": 1664,
+        "priceOriginal": 1882,
+        "ecoFeature": "Zero Plastic Toiletries",
+        "breakfast": "Organic Breakfast Available",
+        "plans": [
+          {
+            "title": "Limited Time Special",
+            "breakfast": "Organic Breakfast Available",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "10% OFF",
+            "price": 1664,
+            "priceOriginal": 1882,
+            "totalWithTaxes": 1959
+          },
+          {
+            "title": "Free Cancellation Flex",
+            "breakfast": "Great organic breakfast for ฿420.00 (optional)",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 1820,
+            "priceOriginal": 2100,
+            "totalWithTaxes": 2120
+          }
+        ]
+      },
+      {
+        "id": "r20",
+        "name": "Deluxe Eco Twin Room",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "2 Twin Beds",
+        "view": "City view",
+        "size": "35m²",
+        "price": 1850,
+        "priceOriginal": 2200,
+        "ecoFeature": "Refillable Glass Bottle Station",
+        "breakfast": "Includes Organic Breakfast",
+        "plans": [
+          {
+            "title": "Breakfast Deal",
+            "breakfast": "Includes Organic Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "15% OFF",
+            "price": 1850,
+            "priceOriginal": 2200,
+            "totalWithTaxes": 2170
+          }
+        ]
+      },
+      {
+        "id": "r21",
+        "name": "Executive Corner Eco Suite",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "1 King Bed",
+        "view": "Corner Skyline View",
+        "size": "52m²",
+        "price": 2750,
+        "priceOriginal": 3600,
+        "ecoFeature": "Solar Heated Water & Energy Sensors",
+        "breakfast": "Includes Organic Breakfast & Evening Drinks",
+        "plans": [
+          {
+            "title": "Corner Suite Offer",
+            "breakfast": "Includes Organic Breakfast & Evening Drinks",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "23% OFF",
+            "price": 2750,
+            "priceOriginal": 3600,
+            "totalWithTaxes": 3225
+          }
+        ]
+      },
+      {
+        "id": "r22",
+        "name": "Eco Family Suite",
+        "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "1 King Bed + 2 Single Beds",
+        "view": "City view",
+        "size": "60m²",
+        "price": 3200,
+        "priceOriginal": 4200,
+        "ecoFeature": "Recycling Waste Bins & Eco Amenities",
+        "breakfast": "Includes Family Organic Breakfast",
+        "plans": [
+          {
+            "title": "Family Green Package",
+            "breakfast": "Includes Family Organic Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "4 adults",
+            "discountTag": "24% OFF",
+            "price": 3200,
+            "priceOriginal": 4200,
+            "totalWithTaxes": 3750
+          }
+        ]
+      }
+    ],
+    "carbonMetrics": {
+      "actualCO2PerNight": 17.6,
+      "regionalBenchmark": 25,
+      "carbonSavedPerNight": 7.4,
+      "savingPercentage": 29.6,
+      "treesEquiv": 0.7,
+      "grossTotalCO2": 47531.85,
+      "lastUpdated": "2026-10"
+    }
+  },
+  {
+    "id": "h5",
+    "name": "Keemala Eco-Villas & Rainforest Sanctuary",
+    "city": "Phuket",
+    "stars": 5,
+    "rating": 9.4,
+    "ratingLabel": "Exceptional",
+    "reviewsCount": 1420,
+    "reviewQuote": "Stunning rainforest treehouse & zero waste luxury",
+    "address": "10/88 Nakasud Rd, Kamala, Kathu, Phuket 83150",
+    "lat": 7.9501,
+    "lng": 98.2882,
+    "ecoCertificates": [
+      "GSTC Certified",
+      "EarthCheck Gold"
+    ],
+    "ecoRating": "EarthCheck Gold",
+    "carbonRating": "-49.7% CO₂e/night",
+    "priceTHB": 7800,
+    "priceOriginalTHB": 12000,
+    "priceDiscountTHB": 7800,
+    "totalWithTaxesTHB": 8900,
+    "discountTag": "35% OFF Eco Deal",
+    "urgencyTag": "High Demand",
+    "roomType": "Clay Pool Cottage Eco Villa",
+    "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+    "badge": "EarthCheck Gold",
+    "gallery": [
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+    ],
+    "surroundings": {
+      "transit": "Kamala Beach Shuttle (2.0KM)",
+      "landmark": "Phuket Elephant Sanctuary (5.0KM)",
+      "airport": "28.0 KM from HKT"
+    },
+    "rooms": [
+      {
+        "id": "r4",
+        "name": "Rainforest Clay Pool Villa",
+        "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 8,
+        "bed": "1 king bed",
+        "view": "Rainforest view",
+        "size": "126m²",
+        "price": 7800,
+        "priceOriginal": 12000,
+        "ecoFeature": "Natural Water Recycling Pool",
+        "breakfast": "100% Organic Farm Breakfast",
+        "plans": [
+          {
+            "title": "Special Eco Villa Package",
+            "breakfast": "Includes 100% Organic Farm Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "35% off Member deal",
+            "price": 7800,
+            "priceOriginal": 12000,
+            "totalWithTaxes": 8900
+          },
+          {
+            "title": "Pay at Hotel Flexible Plan",
+            "breakfast": "Includes 100% Organic Farm Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 8500,
+            "priceOriginal": 12000,
+            "totalWithTaxes": 9750
+          }
+        ]
+      },
+      {
+        "id": "r50",
+        "name": "Tent Pool Villa",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 7,
+        "bed": "1 King Bed",
+        "view": "Jungle & Valley View",
+        "size": "140m²",
+        "price": 9200,
+        "priceOriginal": 14000,
+        "ecoFeature": "Sustainable Canvas & Recycled Timber",
+        "breakfast": "Includes 100% Organic Farm Breakfast",
+        "plans": [
+          {
+            "title": "Tent Villa Luxury Offer",
+            "breakfast": "Includes 100% Organic Farm Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "34% OFF",
+            "price": 9200,
+            "priceOriginal": 14000,
+            "totalWithTaxes": 10500
+          }
+        ]
+      },
+      {
+        "id": "r51",
+        "name": "Tree Pool House",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 9,
+        "bed": "1 King Bed + 2 Twin Beds",
+        "view": "Treehouse Canopy View",
+        "size": "169m²",
+        "price": 12500,
+        "priceOriginal": 18500,
+        "ecoFeature": "2-Level Canopy Design with Private Plunge Pool",
+        "breakfast": "Includes Farm-to-Table Gourmet Breakfast",
+        "plans": [
+          {
+            "title": "Canopy Treehouse Special",
+            "breakfast": "Includes Farm-to-Table Gourmet Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "4 adults",
+            "discountTag": "32% OFF",
+            "price": 12500,
+            "priceOriginal": 18500,
+            "totalWithTaxes": 14200
+          }
+        ]
+      },
+      {
+        "id": "r52",
+        "name": "Bird's Nest Pool Villa",
+        "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 10,
+        "bed": "1 Super King Bed",
+        "view": "Ocean & Rainforest View",
+        "size": "185m²",
+        "price": 15800,
+        "priceOriginal": 23000,
+        "ecoFeature": "Iconic Woven Nest Design & Solar Power",
+        "breakfast": "Includes Private In-Villa Floating Breakfast",
+        "plans": [
+          {
+            "title": "Signature Bird's Nest Deal",
+            "breakfast": "Includes Private In-Villa Floating Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "31% OFF",
+            "price": 15800,
+            "priceOriginal": 23000,
+            "totalWithTaxes": 17900
+          }
+        ]
+      }
+    ],
+    "carbonMetrics": {
+      "actualCO2PerNight": 17.6,
+      "regionalBenchmark": 35,
+      "carbonSavedPerNight": 17.4,
+      "savingPercentage": 49.7,
+      "treesEquiv": 1.7,
+      "grossTotalCO2": 47531.85,
+      "lastUpdated": "2026-10"
+    }
+  },
+  {
+    "id": "h6",
+    "name": "Raya Heritage Eco Resort Chiang Mai",
+    "city": "Chiang Mai",
+    "stars": 5,
+    "rating": 9.5,
+    "ratingLabel": "Exceptional",
+    "reviewsCount": 980,
+    "reviewQuote": "Peaceful Ping riverfront with sustainable Lanna crafts",
+    "address": "157 Moo 2, San Sai Luang, Mae Rim, Chiang Mai 50180",
+    "lat": 18.8512,
+    "lng": 98.981,
+    "ecoCertificates": [
+      "Green Leaf 5-Star",
+      "Organic Farm-to-Table"
+    ],
+    "ecoRating": "Green Leaf 5-Star",
+    "carbonRating": "-51.3% CO₂e/night",
+    "priceTHB": 4200,
+    "priceOriginalTHB": 6500,
+    "priceDiscountTHB": 4200,
+    "totalWithTaxesTHB": 4850,
+    "discountTag": "Lanna Eco Offer 35% off",
+    "urgencyTag": "Popular choice",
+    "roomType": "Rin Terrace River View Suite",
+    "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+    "badge": "Local Community Craft",
+    "gallery": [
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+    ],
+    "surroundings": {
+      "transit": "Chiang Mai Old City Electric Bus (10 mins)",
+      "landmark": "Ping Riverfront Walk (10m)",
+      "airport": "14.2 KM from CNX"
+    },
+    "rooms": [
+      {
+        "id": "r5",
+        "name": "Rin Terrace River View Suite",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "1 king bed",
+        "view": "River view",
+        "size": "75m²",
+        "price": 4200,
+        "priceOriginal": 6500,
+        "ecoFeature": "Handwoven Natural Cotton Textiles",
+        "breakfast": "Organic Northern Thai Breakfast",
+        "plans": [
+          {
+            "title": "Lanna Eco Offer",
+            "breakfast": "Includes Organic Northern Thai Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "35% off Member deal",
+            "price": 4200,
+            "priceOriginal": 6500,
+            "totalWithTaxes": 4850
+          },
+          {
+            "title": "Flexible Pay at Hotel",
+            "breakfast": "Includes Organic Northern Thai Breakfast",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 4800,
+            "priceOriginal": 6500,
+            "totalWithTaxes": 5520
+          }
+        ]
+      },
+      {
+        "id": "r60",
+        "name": "Huen Bon Courtyard Suite",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "1 King Bed",
+        "view": "Lanna Garden View",
+        "size": "85m²",
+        "price": 4900,
+        "priceOriginal": 7200,
+        "ecoFeature": "Natural Teakwood & Clay Amenities",
+        "breakfast": "Includes Organic Northern Thai Breakfast",
+        "plans": [
+          {
+            "title": "Courtyard Suite Special",
+            "breakfast": "Includes Organic Northern Thai Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "32% OFF",
+            "price": 4900,
+            "priceOriginal": 7200,
+            "totalWithTaxes": 5635
+          }
+        ]
+      },
+      {
+        "id": "r61",
+        "name": "Kraam Executive Pool Suite",
+        "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 8,
+        "bed": "1 King Bed",
+        "view": "Riverfront & Private Pool",
+        "size": "100m²",
+        "price": 6800,
+        "priceOriginal": 9800,
+        "ecoFeature": "Private Salt-Water Plunge Pool & Solar Energy",
+        "breakfast": "Includes Organic Breakfast & Afternoon Tea",
+        "plans": [
+          {
+            "title": "Private Pool Luxury Package",
+            "breakfast": "Includes Organic Breakfast & Afternoon Tea",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "30% OFF",
+            "price": 6800,
+            "priceOriginal": 9800,
+            "totalWithTaxes": 7820
+          }
+        ]
+      },
+      {
+        "id": "r62",
+        "name": "Ping River Sanctuary Suite",
+        "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 7,
+        "bed": "1 Super King Bed",
+        "view": "Direct Ping River View",
+        "size": "115m²",
+        "price": 8500,
+        "priceOriginal": 12500,
+        "ecoFeature": "100% Zero Single-Use Plastic & Local Handicrafts",
+        "breakfast": "Includes Gourmet Organic Breakfast & Spa Discount",
+        "plans": [
+          {
+            "title": "Riverfront Sanctuary Deal",
+            "breakfast": "Includes Gourmet Organic Breakfast & Spa Discount",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "32% OFF",
+            "price": 8500,
+            "priceOriginal": 12500,
+            "totalWithTaxes": 9775
+          }
+        ]
+      }
+    ],
+    "carbonMetrics": {
+      "actualCO2PerNight": 17.06,
+      "regionalBenchmark": 35,
+      "carbonSavedPerNight": 17.94,
+      "savingPercentage": 51.3,
+      "treesEquiv": 1.8,
+      "grossTotalCO2": 46062.85,
+      "lastUpdated": "2026-10"
+    }
+  },
+  {
+    "id": "h7",
+    "name": "Tamarind Village Eco Heritage Chiang Mai",
+    "city": "Chiang Mai",
+    "stars": 4,
+    "rating": 9.2,
+    "ratingLabel": "Wonderful",
+    "reviewsCount": 840,
+    "reviewQuote": "Charming heritage sanctuary under ancient tamarind trees",
+    "address": "50/1 Rajdamnoen Rd, Sri Phum, Old City, Chiang Mai 50200",
+    "lat": 18.7883,
+    "lng": 98.9897,
+    "ecoCertificates": [
+      "GSTC Certified",
+      "Zero Single-Use Plastic"
+    ],
+    "ecoRating": "GSTC Certified",
+    "carbonRating": "-29.6% CO₂e/night",
+    "priceTHB": 3100,
+    "priceOriginalTHB": 4500,
+    "priceDiscountTHB": 3100,
+    "totalWithTaxesTHB": 3565,
+    "discountTag": "31% OFF Heritage Deal",
+    "urgencyTag": "Old City Location",
+    "roomType": "Lanna Heritage Courtyard Room",
+    "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+    "badge": "Heritage Eco Stay",
+    "gallery": [
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+    ],
+    "surroundings": {
+      "transit": "Walking Street Night Market (50m)",
+      "landmark": "Wat Chedi Luang (300m)",
+      "airport": "5.5 KM from CNX"
+    },
+    "rooms": [
+      {
+        "id": "r6",
+        "name": "Lanna Heritage Courtyard Room",
+        "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "1 Queen Bed",
+        "view": "Garden Courtyard view",
+        "size": "36m²",
+        "price": 3100,
+        "priceOriginal": 4500,
+        "ecoFeature": "Filtered Water Bottles & Natural Soap",
+        "breakfast": "Includes Local Lanna Breakfast",
+        "plans": [
+          {
+            "title": "Heritage Saver Deal",
+            "breakfast": "Includes Local Lanna Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "31% off Member deal",
+            "price": 3100,
+            "priceOriginal": 4500,
+            "totalWithTaxes": 3565
+          },
+          {
+            "title": "Pay at Hotel Flex",
+            "breakfast": "Includes Local Lanna Breakfast",
+            "cancellation": "Free Cancellation",
+            "isFreeCancel": true,
+            "payment": "Pay at hotel",
+            "guests": "2 adults",
+            "discountTag": null,
+            "price": 3500,
+            "priceOriginal": 4500,
+            "totalWithTaxes": 4025
+          }
+        ]
+      },
+      {
+        "id": "r70",
+        "name": "Lanna Deluxe Suite",
+        "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 6,
+        "bed": "1 King Bed",
+        "view": "Tamarind Courtyard View",
+        "size": "48m²",
+        "price": 3950,
+        "priceOriginal": 5600,
+        "ecoFeature": "Traditional Bamboo & Organic Linens",
+        "breakfast": "Includes Local Lanna Breakfast",
+        "plans": [
+          {
+            "title": "Lanna Deluxe Offer",
+            "breakfast": "Includes Local Lanna Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "29% OFF",
+            "price": 3950,
+            "priceOriginal": 5600,
+            "totalWithTaxes": 4540
+          }
+        ]
+      },
+      {
+        "id": "r71",
+        "name": "Tamarind Family Suite",
+        "image": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 7,
+        "bed": "1 King Bed + 2 Twin Beds",
+        "view": "Old City Garden View",
+        "size": "65m²",
+        "price": 5200,
+        "priceOriginal": 7500,
+        "ecoFeature": "Refill Water Station & Zero Plastic",
+        "breakfast": "Includes Family Organic Breakfast",
+        "plans": [
+          {
+            "title": "Family Heritage Package",
+            "breakfast": "Includes Family Organic Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "4 adults",
+            "discountTag": "30% OFF",
+            "price": 5200,
+            "priceOriginal": 7500,
+            "totalWithTaxes": 5980
+          }
+        ]
+      },
+      {
+        "id": "r72",
+        "name": "Lanna Courtyard Twin Room",
+        "image": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 5,
+        "bed": "2 Twin Beds",
+        "view": "Garden Courtyard view",
+        "size": "36m²",
+        "price": 3200,
+        "priceOriginal": 4600,
+        "ecoFeature": "Solar Hot Water & Natural Toiletries",
+        "breakfast": "Includes Local Lanna Breakfast",
+        "plans": [
+          {
+            "title": "Twin Courtyard Saver",
+            "breakfast": "Includes Local Lanna Breakfast",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "30% OFF",
+            "price": 3200,
+            "priceOriginal": 4600,
+            "totalWithTaxes": 3680
+          }
+        ]
+      },
+      {
+        "id": "r73",
+        "name": "Spa Eco Sanctuary Suite",
+        "image": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+        "photoCount": 8,
+        "bed": "1 Super King Bed",
+        "view": "Private Herb Garden View",
+        "size": "72m²",
+        "price": 6400,
+        "priceOriginal": 9000,
+        "ecoFeature": "In-Room Herbal Bath & Herbal Oil Amenities",
+        "breakfast": "Includes Organic Breakfast & Daily Herbal Tea",
+        "plans": [
+          {
+            "title": "Wellness Sanctuary Package",
+            "breakfast": "Includes Organic Breakfast & Daily Herbal Tea",
+            "cancellation": "Free Cancellation before 18:00, Oct 14",
+            "isFreeCancel": true,
+            "payment": "Prepay online",
+            "guests": "2 adults",
+            "discountTag": "28% OFF",
+            "price": 6400,
+            "priceOriginal": 9000,
+            "totalWithTaxes": 7360
+          }
+        ]
+      }
+    ],
+    "carbonMetrics": {
+      "actualCO2PerNight": 17.6,
+      "regionalBenchmark": 25,
+      "carbonSavedPerNight": 7.4,
+      "savingPercentage": 29.6,
+      "treesEquiv": 0.7,
+      "grossTotalCO2": 47531.85,
+      "lastUpdated": "2026-10"
+    }
+  }
+]
