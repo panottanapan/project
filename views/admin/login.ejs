@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Kanit', sans-serif; }</style>
+</head>
+<body class="min-h-screen bg-emerald-950 text-slate-800 flex items-center justify-center p-4">
+    <main class="w-full max-w-md">
+        <a href="/hotels" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-emerald-100 hover:text-white">
+            <span>←</span> Back to GreenTravel
+        </a>
+        <section class="rounded-3xl bg-white p-7 shadow-2xl sm:p-9">
+            <div class="mb-7 text-center">
+                <div class="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-3xl">🌿</div>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">GreenTravel Partner</p>
+                <h1 class="mt-2 text-2xl font-bold text-slate-900">Hotel Admin Login</h1>
+                <p class="mt-2 text-sm text-slate-500">Select your hotel and enter your password to manage its details.</p>
+            </div>
+
+            <% if (loginError) { %>
+                <div role="alert" class="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"><%= loginError %></div>
+            <% } %>
+
+            <form method="POST" action="/admin/login" class="space-y-4">
+                <label class="block text-sm font-semibold text-slate-700">
+                    Hotel
+                    <select name="hotelId" required class="mt-1.5 w-full rounded-xl border border-slate-300 bg-white p-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                        <option value="" disabled <%= selectedHotelId ? '' : 'selected' %>>Select a hotel</option>
+                        <% hotels.forEach(hotel => { %>
+                            <option value="<%= hotel.id %>" <%= selectedHotelId === hotel.id ? 'selected' : '' %>><%= hotel.name %> · <%= hotel.city %></option>
+                        <% }); %>
+                    </select>
+                </label>
+                <label class="block text-sm font-semibold text-slate-700">
+                    Password
+                    <input name="password" type="password" required autocomplete="current-password" placeholder="Enter demo password" class="mt-1.5 w-full rounded-xl border border-slate-300 p-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100">
+                </label>
+                <button type="submit" class="w-full rounded-xl bg-emerald-700 px-4 py-3 font-bold text-white transition hover:bg-emerald-800">Sign in →</button>
+            </form>
+
+            <p class="mt-5 rounded-xl bg-emerald-50 px-4 py-3 text-center text-xs text-emerald-800">
+                Demo password: <strong>green123</strong>
+            </p>
+            <p class="mt-4 text-center text-[11px] text-slate-400">Demo portal for hotel and carbon management</p>
+        </section>
+    </main>
+</body>
+</html>

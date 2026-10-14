@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <!-- Top Navbar & Header -->
+        <header class="bg-emerald-950 text-white p-6 rounded-2xl shadow-md border border-emerald-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-emerald-200">🌱 Hotel Back-Office Portal</h1>
+                    <span class="bg-emerald-800 text-emerald-100 text-xs px-2.5 py-1 rounded-full font-semibold">HCMI Engine v2.0 Sync</span>
+                </div>
+                <p class="text-emerald-100/80 text-sm mt-1">ระบบจัดการและคำนวณคาร์บอนฟุตพริ้นท์หลังบ้าน ซิงค์ข้อมูลตรงไปยังหน้าเว็บจอง GreenTravel</p>
+            </div>
+            <a href="/hotels" class="bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold px-4 py-2.5 rounded-xl transition shadow">
+                🌐 ไปยังหน้าเว็บจอง (Frontend) &rarr;
+            </a>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- SECTION 1: Advanced Input Form (7 cols) -->
+            <section class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                
+                <div class="border-b pb-4 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">1. เลือกโรงแรมและกรอกข้อมูลพลังงานประจำเดือน</h2>
+                        <p class="text-xs text-slate-500">คำนวณคาร์บอนตามมาตรฐาน HCMI สากล</p>
+                    </div>
+                </div>
+
+                <form id="hcmiAdvancedForm" class="space-y-6">
+                    
+                    <!-- เลือกโรงแรมจากระบบ -->
+                    <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200 space-y-2">
+                        <label class="block text-xs font-bold text-emerald-900 uppercase">🏢 เลือกโรงแรมที่ต้องการบันทึกข้อมูล</label>
+                        <select id="hotelSelect" onchange="onHotelSelectChange()" class="w-full p-2.5 bg-white border border-emerald-300 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <% hotels.forEach(hotel => { %>
+                                <option value="<%= hotel.id %>" data-stars="<%= hotel.stars %>" data-name="<%= hotel.name %>">
+                                    <%= hotel.name %> (<%= hotel.city %>) - <%= hotel.stars %> ดาว
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">ประจำเดือน / ปี</label>
+                            <input type="month" id="period" value="2026-10" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">ระดับโรงแรม (Benchmark)</label>
+                            <select id="hotelStar" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                                <option value="18.5">3 ดาว (benchmark 18.5 kg CO₂e/คืน)</option>
+                                <option value="25.0" selected>4 ดาว (benchmark 25.0 kg CO₂e/คืน)</option>
+                                <option value="35.0">5 ดาว / รีสอร์ท (benchmark 35.0 kg CO₂e/คืน)</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-600 mb-1">จำนวนคืนห้องพักที่มีคนพักจริง (ORN)</label>
+                            <input type="number" id="orn" value="2100" min="1" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Area Allocation Inputs -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-slate-700">📐 การปันส่วนพื้นที่ (Area Allocation)</span>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 grid grid-cols-3 gap-3 text-xs">
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">พื้นที่รวม (m²)</label>
+                                <input type="number" id="areaTotal" value="15000" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">พื้นที่ห้องพัก (m²)</label>
+                                <input type="number" id="areaRooms" value="10500" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">พื้นที่ห้องประชุม (m²)</label>
+                                <input type="number" id="areaMeeting" value="3000" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- พลังงาน Scope 1 & 2 -->
+                    <div class="space-y-3 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">⚡ พลังงานและเชื้อเพลิง (Scope 1 & Scope 2)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">ไฟฟ้าที่ใช้ (kWh)</label>
+                                <input type="number" id="electricity" value="65000" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">ก๊าซ LPG (กก.)</label>
+                                <input type="number" id="lpg" value="800" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">น้ำมันดีเซล (ลิตร)</label>
+                                <input type="number" id="diesel" value="300" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- สารทำความเย็น + บริการภายนอก -->
+                    <div class="space-y-3 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">❄️ สารทำความเย็นและงานซักล้าง (Scope 1 & Scope 3)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">เติมน้ำยา R-410A (กก.)</label>
+                                <input type="number" id="refrigerant" value="5" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">ผ้าส่งซักล้างภายนอก (กก.)</label>
+                                <input type="number" id="laundry" value="4200" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- หักลบร้านค้าเช่า -->
+                    <div class="space-y-2 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">🏬 หักลบพลังงานร้านค้าเช่า (Tenant Deduction)</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">ไฟฟ้าที่ร้านค้าเช่าใช้ (kWh)</label>
+                            <input type="number" id="tenantElectricity" value="3500" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="calculateAdvancedHCMI()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 rounded-xl transition duration-200 shadow-md text-sm">
+                        ⚙️ คำนวณค่าคาร์บอน (Calculate)
+                    </button>
+                </form>
+            </section>
+
+            <!-- SECTION 2: Results & Save Action (5 cols) -->
+            <section class="lg:col-span-5 space-y-6">
+                
+                <!-- Live Preview Display -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b pb-2">2. ตัวอย่างการแสดงผลที่จะปรากฏหน้าเว็บ (Live Preview)</h2>
+                    
+                    <div class="border rounded-2xl p-4 bg-white shadow-sm space-y-3">
+                        <div id="badgeContainer" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs px-3 py-1 rounded-full w-fit font-medium">
+                            <span>🌿</span>
+                            <span id="badgeText">ประหยัด CO₂ ได้ 0%</span>
+                        </div>
+
+                        <div>
+                            <h3 id="displayHotelName" class="font-bold text-slate-900 text-base">Grand Sukhumvit Resort</h3>
+                            <p class="text-xs text-slate-500">📍 Verified HCMI Carbon Metrics</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                            <div>
+                                <p class="text-[10px] text-slate-500">ปล่อยคาร์บอน / คืน</p>
+                                <p class="text-lg font-bold text-slate-800"><span id="actualEmissionDisplay">0.00</span> <span class="text-xs font-normal text-slate-500">kg</span></p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500">ประหยัดได้ / คืน</p>
+                                <p class="text-lg font-bold text-emerald-600"><span id="savedCarbonDisplay">0.00</span> <span class="text-xs font-normal text-emerald-600">kg</span></p>
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-600 bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
+                            <span class="text-base">🌳</span>
+                            <span>เทียบเท่าปลูกต้นไม้ <strong id="treesEquiv" class="text-emerald-700">0</strong> ต้น/ปี/คืนเข้าพัก</span>
+                        </div>
+                    </div>
+
+                    <!-- SAVE BUTTON -->
+                    <button type="button" onclick="saveAndSyncToFrontend()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-lg flex justify-center items-center gap-2 text-sm">
+                        <span>🚀</span> บันทึก & ซิงค์ข้อมูลขึ้นหน้าเว็บจอง (Save & Sync)
+                    </button>
+                </div>
+
+                <!-- Carbon Breakdown -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3 text-xs">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b pb-2">3. สรุปผลคาร์บอนฟุตพริ้นท์ (HCMI Summary)</h2>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 1 (เชื้อเพลิง + สารทำความเย็น):</span>
+                        <span id="scope1CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 2 (ไฟฟ้าสุทธิ):</span>
+                        <span id="scope2CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 3 (งานซักล้าง):</span>
+                        <span id="scope3CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 font-bold text-slate-800 bg-slate-50 px-2 rounded">
+                        <span>ปล่อยคาร์บอนรวม (Gross Total):</span>
+                        <span id="totalGrossCO2" class="font-mono text-emerald-700">0.00 kg</span>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const EF = { ELECTRICITY: 0.4999, LPG: 3.1100, DIESEL: 2.6800, R410A: 2088.0, LAUNDRY: 0.6000 };
+        let calculatedPayload = null;
+
+        function onHotelSelectChange() {
+            const select = document.getElementById('hotelSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            const stars = selectedOption.getAttribute('data-stars');
+            
+            const starSelect = document.getElementById('hotelStar');
+            if (stars === "5") starSelect.value = "35.0";
+            else if (stars === "3") starSelect.value = "18.5";
+            else starSelect.value = "25.0";
+
+            calculateAdvancedHCMI();
+        }
+
+        function calculateAdvancedHCMI() {
+            const select = document.getElementById('hotelSelect');
+            const hotelId = select.value;
+            const hotelName = select.options[select.selectedIndex].getAttribute('data-name');
+            const period = document.getElementById('period').value;
+            const benchmark = parseFloat(document.getElementById('hotelStar').value);
+            const orn = parseFloat(document.getElementById('orn').value) || 1;
+
+            const areaTotal = parseFloat(document.getElementById('areaTotal').value) || 1;
+            const areaRooms = parseFloat(document.getElementById('areaRooms').value) || 0;
+            const areaMeeting = parseFloat(document.getElementById('areaMeeting').value) || 0;
+
+            const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+            const lpg = parseFloat(document.getElementById('lpg').value) || 0;
+            const diesel = parseFloat(document.getElementById('diesel').value) || 0;
+            const refrigerant = parseFloat(document.getElementById('refrigerant').value) || 0;
+            const laundry = parseFloat(document.getElementById('laundry').value) || 0;
+            const tenantElectricity = parseFloat(document.getElementById('tenantElectricity').value) || 0;
+
+            const scope1Total = (lpg * EF.LPG) + (diesel * EF.DIESEL) + (refrigerant * EF.R410A);
+            const netElectricity = Math.max(0, electricity - tenantElectricity);
+            const scope2Total = netElectricity * EF.ELECTRICITY;
+            const scope3Total = laundry * EF.LAUNDRY;
+            const grossTotalCO2 = scope1Total + scope2Total + scope3Total;
+
+            const totalAllocatedArea = areaRooms + areaMeeting;
+            const roomRatio = totalAllocatedArea > 0 ? (areaRooms / totalAllocatedArea) : 1;
+
+            const roomsTotalCO2 = grossTotalCO2 * roomRatio;
+            const actualCO2PerNight = roomsTotalCO2 / orn;
+
+            let carbonSavedPerNight = benchmark - actualCO2PerNight;
+            if (carbonSavedPerNight < 0) carbonSavedPerNight = 0;
+            const savingPercentage = (carbonSavedPerNight / benchmark) * 100;
+            const treesEquiv = (carbonSavedPerNight / 10).toFixed(1);
+
+            document.getElementById('displayHotelName').innerText = hotelName;
+            document.getElementById('actualEmissionDisplay').innerText = actualCO2PerNight.toFixed(2);
+            document.getElementById('savedCarbonDisplay').innerText = carbonSavedPerNight.toFixed(2);
+            document.getElementById('treesEquiv').innerText = treesEquiv;
+
+            document.getElementById('scope1CO2').innerText = `${scope1Total.toFixed(2)} kg`;
+            document.getElementById('scope2CO2').innerText = `${scope2Total.toFixed(2)} kg`;
+            document.getElementById('scope3CO2').innerText = `${scope3Total.toFixed(2)} kg`;
+            document.getElementById('totalGrossCO2').innerText = `${grossTotalCO2.toFixed(2)} kg`;
+
+            const badgeText = document.getElementById('badgeText');
+            if (savingPercentage > 0) {
+                badgeText.innerText = `ประหยัด CO₂ ได้ ${savingPercentage.toFixed(1)}% เมื่อเทียบกับค่าเฉลี่ย`;
+            } else {
+                badgeText.innerText = `ปล่อย CO₂ ตามเกณฑ์มาตรฐาน`;
+            }
+
+            calculatedPayload = {
+                hotelId: hotelId,
+                carbonMetrics: {
+                    period: period,
+                    actual_co2_per_room_night_kg: parseFloat(actualCO2PerNight.toFixed(2)),
+                    regional_benchmark_kg: benchmark,
+                    carbon_saved_per_night_kg: parseFloat(carbonSavedPerNight.toFixed(2)),
+                    saving_percentage: parseFloat(savingPercentage.toFixed(1)),
+                    equivalent_trees_yearly: parseFloat(treesEquiv),
+                    gross_total_co2e: parseFloat(grossTotalCO2.toFixed(2))
+                }
+            };
+        }
+
+        async function saveAndSyncToFrontend() {
+            if (!calculatedPayload) calculateAdvancedHCMI();
+
+            try {
+                const response = await fetch('/admin/hotels/carbon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(calculatedPayload)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`✅ ${result.message}\n\nค่าคาร์บอนอัปเดตไปแสดงที่หน้าแรกและหน้ารายละเอียดโรงแรมแล้วครับ`);
+                } else {
+                    alert(`❌ เกิดข้อผิดพลาด: ${result.message}`);
+                }
+            } catch (err) {
+                alert('❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อบันทึกข้อมูลได้');
+            }
+        }
+
+        window.onload = onHotelSelectChange;
+    </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <header class="bg-emerald-950 text-white p-6 rounded-2xl shadow-md border border-emerald-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-2xl font-bold text-emerald-200">🌱 Hotel Back-Office Portal</h1>
+                    <span class="bg-emerald-800 text-emerald-100 text-xs px-2.5 py-1 rounded-full font-semibold">HCMI Engine v2.0</span>
+                </div>
+                <p class="text-emerald-100/80 text-sm mt-1">Manage hotel details and calculate carbon footprints, synced directly with the GreenTravel booking site.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <form method="POST" action="/admin/logout">
+                    <button type="submit" class="rounded-xl border border-emerald-600 px-4 py-2.5 text-xs font-bold text-emerald-100 transition hover:bg-emerald-800">Sign out</button>
+                </form>
+                <a href="/hotels/<%= hotel.id %>" class="bg-white text-emerald-900 hover:bg-emerald-50 text-xs font-bold px-4 py-2.5 rounded-xl transition shadow">
+                    🌐 View hotel page &rarr;
+                </a>
+            </div>
+        </header>
+
+        <% if (saved) { %>
+            <div role="status" class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">Hotel details saved. Your GreenTravel hotel page has been updated.</div>
+        <% } %>
+
+        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="mb-5 border-b border-slate-100 pb-4">
+                <h2 class="text-lg font-bold text-slate-800">Hotel Profile</h2>
+                <p class="mt-1 text-xs text-slate-500">Edit the details shown on your hotel listing and detail page. Images are previewed from a URL and are not uploaded to an external service.</p>
+            </div>
+            <form method="POST" action="/admin/hotels/profile" class="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_16rem]">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label class="text-xs font-medium text-slate-600">Hotel name
+                        <input name="name" required maxlength="120" value="<%= hotel.name %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">City
+                        <select name="city" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                            <% ['Bangkok', 'Chiang Mai', 'Phuket'].forEach(city => { %>
+                                <option value="<%= city %>" <%= hotel.city === city ? 'selected' : '' %>><%= city %></option>
+                            <% }); %>
+                        </select>
+                    </label>
+                    <label class="text-xs font-medium text-slate-600 sm:col-span-2">Address
+                        <input name="address" required maxlength="250" value="<%= hotel.address %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">Star rating
+                        <select name="stars" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                            <% [1, 2, 3, 4, 5].forEach(star => { %>
+                                <option value="<%= star %>" <%= Number(hotel.stars) === star ? 'selected' : '' %>><%= star %> stars</option>
+                            <% }); %>
+                        </select>
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">Guest rating (0–10)
+                        <input type="number" name="rating" min="0" max="10" step="0.1" required value="<%= hotel.rating %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">Starting price (THB / night)
+                        <input type="number" name="priceTHB" min="1" step="1" required value="<%= hotel.priceDiscountTHB || hotel.priceTHB %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">Room type
+                        <input name="roomType" required maxlength="100" value="<%= hotel.roomType %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600">Eco rating / highlight
+                        <input name="ecoRating" required maxlength="100" value="<%= hotel.ecoRating %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600 sm:col-span-2">Eco certificates shown on the website (separate entries with commas)
+                        <input name="ecoCertificates" required value="<%= hotel.ecoCertificates.join(', ') %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600 sm:col-span-2">Short guest review
+                        <input name="reviewQuote" required maxlength="200" value="<%= hotel.reviewQuote %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <label class="text-xs font-medium text-slate-600 sm:col-span-2">Hotel image URL (demo)
+                        <input id="hotelImageInput" type="url" name="image" required value="<%= hotel.image %>" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm">
+                    </label>
+                    <button type="submit" class="rounded-xl bg-slate-800 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-900 sm:col-span-2">Save hotel details</button>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-xs font-semibold text-slate-600">Website image preview</p>
+                    <img id="hotelImagePreview" src="<%= hotel.image %>" alt="Hotel image preview" class="h-48 w-full rounded-xl bg-slate-100 object-cover">
+                    <p class="text-[11px] leading-relaxed text-slate-400">Change the URL to preview a different image. The main image and first gallery image will be updated.</p>
+                </div>
+            </form>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <section class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div class="border-b pb-4">
+                    <h2 class="text-lg font-bold text-slate-800">1. Carbon Data & Energy Use</h2>
+                    <p class="text-xs text-slate-500">Calculate your hotel's carbon footprint using the HCMI methodology.</p>
+                </div>
+
+                <form id="hcmiAdvancedForm" class="space-y-6">
+                    <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200 space-y-2">
+                        <label class="block text-xs font-bold text-emerald-900 uppercase">🏢 Selected hotel</label>
+                        <select id="hotelSelect" onchange="onHotelSelectChange()" class="w-full p-2.5 bg-white border border-emerald-300 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+                            <option value="<%= hotel.id %>" data-stars="<%= hotel.stars %>" data-name="<%= hotel.name %>">
+                                <%= hotel.name %> (<%= hotel.city %>) - <%= hotel.stars %> stars
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Reporting month</label>
+                            <input type="month" id="period" value="2026-10" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Hotel benchmark</label>
+                            <select id="hotelStar" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                                <option value="18.5">3 stars (18.5 kg CO₂e/room night)</option>
+                                <option value="25.0" selected>4 stars (25.0 kg CO₂e/room night)</option>
+                                <option value="35.0">5 stars / resort (35.0 kg CO₂e/room night)</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Occupied room nights (ORN)</label>
+                            <input type="number" id="orn" value="2100" min="1" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-xs font-bold text-slate-700">📐 Area allocation</span>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 grid grid-cols-3 gap-3 text-xs">
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">Total area (m²)</label>
+                                <input type="number" id="areaTotal" value="15000" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">Guest room area (m²)</label>
+                                <input type="number" id="areaRooms" value="10500" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-slate-600 mb-1">Meeting room area (m²)</label>
+                                <input type="number" id="areaMeeting" value="3000" class="w-full p-2 bg-white border border-slate-200 rounded text-sm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">⚡ Energy & fuel (Scope 1 & Scope 2)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Electricity used (kWh)</label>
+                                <input type="number" id="electricity" value="65000" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">LPG used (kg)</label>
+                                <input type="number" id="lpg" value="800" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Diesel used (litres)</label>
+                                <input type="number" id="diesel" value="300" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">❄️ Refrigerants & laundry (Scope 1 & Scope 3)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">R-410A added (kg)</label>
+                                <input type="number" id="refrigerant" value="5" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Laundry outsourced (kg)</label>
+                                <input type="number" id="laundry" value="4200" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-2">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700">🏬 Tenant energy deduction</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Tenant electricity use (kWh)</label>
+                            <input type="number" id="tenantElectricity" value="3500" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="calculateAdvancedHCMI()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 rounded-xl transition duration-200 shadow-md text-sm">
+                        ⚙️ Calculate carbon footprint
+                    </button>
+                </form>
+            </section>
+
+            <section class="lg:col-span-5 space-y-6">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b pb-2">2. Booking site preview</h2>
+                    
+                    <div class="border rounded-2xl p-4 bg-white shadow-sm space-y-3">
+                        <div id="badgeContainer" class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs px-3 py-1 rounded-full w-fit font-medium">
+                            <span>🌿</span>
+                            <span id="badgeText">0% CO₂ savings</span>
+                        </div>
+
+                        <div>
+                            <h3 id="displayHotelName" class="font-bold text-slate-900 text-base">Grand Sukhumvit Resort</h3>
+                            <p class="text-xs text-slate-500">📍 Verified HCMI Carbon Metrics</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                            <div>
+                                <p class="text-[10px] text-slate-500">Emissions / room night</p>
+                                <p class="text-lg font-bold text-slate-800"><span id="actualEmissionDisplay">0.00</span> <span class="text-xs font-normal text-slate-500">kg</span></p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-slate-500">Saved / room night</p>
+                                <p class="text-lg font-bold text-emerald-600"><span id="savedCarbonDisplay">0.00</span> <span class="text-xs font-normal text-emerald-600">kg</span></p>
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-600 bg-emerald-50/60 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-2">
+                            <span class="text-base">🌳</span>
+                            <span>Equivalent to <strong id="treesEquiv" class="text-emerald-700">0</strong> trees per year per occupied room night</span>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="saveAndSyncToFrontend()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition duration-200 shadow-lg flex justify-center items-center gap-2 text-sm">
+                        <span>🚀</span> Save & sync to booking site
+                    </button>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3 text-xs">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 border-b pb-2">3. Carbon footprint summary (HCMI)</h2>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 1 (fuel + refrigerants):</span>
+                        <span id="scope1CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 2 (net electricity):</span>
+                        <span id="scope2CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1 border-b border-slate-100">
+                        <span class="text-slate-500">Scope 3 (laundry):</span>
+                        <span id="scope3CO2" class="font-mono font-medium">0.00 kg</span>
+                    </div>
+                    <div class="flex justify-between py-1.5 font-bold text-slate-800 bg-slate-50 px-2 rounded">
+                        <span>Total emissions (gross):</span>
+                        <span id="totalGrossCO2" class="font-mono text-emerald-700">0.00 kg</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const hotelImageInput = document.getElementById('hotelImageInput');
+        const hotelImagePreview = document.getElementById('hotelImagePreview');
+        hotelImageInput.addEventListener('input', () => {
+            hotelImagePreview.src = hotelImageInput.value;
+        });
+
+        const EF = { ELECTRICITY: 0.4999, LPG: 3.1100, DIESEL: 2.6800, R410A: 2088.0, LAUNDRY: 0.6000 };
+        let calculatedPayload = null;
+
+        function onHotelSelectChange() {
+            const select = document.getElementById('hotelSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            const stars = selectedOption.getAttribute('data-stars');
+            
+            const starSelect = document.getElementById('hotelStar');
+            if (stars === "5") starSelect.value = "35.0";
+            else if (stars === "3") starSelect.value = "18.5";
+            else starSelect.value = "25.0";
+
+            calculateAdvancedHCMI();
+        }
+
+        function calculateAdvancedHCMI() {
+            const select = document.getElementById('hotelSelect');
+            const hotelId = select.value;
+            const hotelName = select.options[select.selectedIndex].getAttribute('data-name');
+            const period = document.getElementById('period').value;
+            const benchmark = parseFloat(document.getElementById('hotelStar').value);
+            const orn = parseFloat(document.getElementById('orn').value) || 1;
+
+            const areaTotal = parseFloat(document.getElementById('areaTotal').value) || 1;
+            const areaRooms = parseFloat(document.getElementById('areaRooms').value) || 0;
+            const areaMeeting = parseFloat(document.getElementById('areaMeeting').value) || 0;
+
+            const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+            const lpg = parseFloat(document.getElementById('lpg').value) || 0;
+            const diesel = parseFloat(document.getElementById('diesel').value) || 0;
+            const refrigerant = parseFloat(document.getElementById('refrigerant').value) || 0;
+            const laundry = parseFloat(document.getElementById('laundry').value) || 0;
+            const tenantElectricity = parseFloat(document.getElementById('tenantElectricity').value) || 0;
+
+            const scope1Total = (lpg * EF.LPG) + (diesel * EF.DIESEL) + (refrigerant * EF.R410A);
+            const netElectricity = Math.max(0, electricity - tenantElectricity);
+            const scope2Total = netElectricity * EF.ELECTRICITY;
+            const scope3Total = laundry * EF.LAUNDRY;
+            const grossTotalCO2 = scope1Total + scope2Total + scope3Total;
+
+            const totalAllocatedArea = areaRooms + areaMeeting;
+            const roomRatio = totalAllocatedArea > 0 ? (areaRooms / totalAllocatedArea) : 1;
+
+            const roomsTotalCO2 = grossTotalCO2 * roomRatio;
+            const actualCO2PerNight = roomsTotalCO2 / orn;
+
+            let carbonSavedPerNight = benchmark - actualCO2PerNight;
+            if (carbonSavedPerNight < 0) carbonSavedPerNight = 0;
+            const savingPercentage = (carbonSavedPerNight / benchmark) * 100;
+            const treesEquiv = (carbonSavedPerNight / 10).toFixed(1);
+
+            document.getElementById('displayHotelName').innerText = hotelName;
+            document.getElementById('actualEmissionDisplay').innerText = actualCO2PerNight.toFixed(2);
+            document.getElementById('savedCarbonDisplay').innerText = carbonSavedPerNight.toFixed(2);
+            document.getElementById('treesEquiv').innerText = treesEquiv;
+
+            document.getElementById('scope1CO2').innerText = `${scope1Total.toFixed(2)} kg`;
+            document.getElementById('scope2CO2').innerText = `${scope2Total.toFixed(2)} kg`;
+            document.getElementById('scope3CO2').innerText = `${scope3Total.toFixed(2)} kg`;
+            document.getElementById('totalGrossCO2').innerText = `${grossTotalCO2.toFixed(2)} kg`;
+
+            const badgeText = document.getElementById('badgeText');
+            if (savingPercentage > 0) {
+                badgeText.innerText = `${savingPercentage.toFixed(1)}% CO₂ savings vs. benchmark`;
+            } else {
+                badgeText.innerText = 'At or above the CO₂ benchmark';
+            }
+
+            calculatedPayload = {
+                hotelId: hotelId,
+                carbonMetrics: {
+                    period: period,
+                    actual_co2_per_room_night_kg: parseFloat(actualCO2PerNight.toFixed(2)),
+                    regional_benchmark_kg: benchmark,
+                    carbon_saved_per_night_kg: parseFloat(carbonSavedPerNight.toFixed(2)),
+                    saving_percentage: parseFloat(savingPercentage.toFixed(1)),
+                    equivalent_trees_yearly: parseFloat(treesEquiv),
+                    gross_total_co2e: parseFloat(grossTotalCO2.toFixed(2))
+                }
+            };
+        }
+
+        async function saveAndSyncToFrontend() {
+            if (!calculatedPayload) calculateAdvancedHCMI();
+
+            try {
+                const response = await fetch('/admin/hotels/carbon', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(calculatedPayload)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert(`✅ ${result.message}\n\nCarbon metrics have been updated on your hotel listing and detail page.`);
+                } else {
+                    alert(`❌ Error: ${result.message}`);
+                }
+            } catch (err) {
+                alert('❌ Could not connect to the server to save your data.');
+            }
+        }
+
+        window.onload = onHotelSelectChange;
+    </script>
+</body>
+</html>

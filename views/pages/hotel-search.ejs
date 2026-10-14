@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- Sticky Header Search Bar (Trip.com Top Bar) -->
+    <div class="bg-white border-b border-slate-200 sticky top-16 z-40 shadow-sm py-3 px-4">
+        <div class="max-w-7xl mx-auto">
+            <form action="/hotels/search" method="GET" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-[minmax(8rem,1fr)_minmax(18rem,1.4fr)_minmax(18rem,1.5fr)_minmax(8rem,.65fr)_minmax(8rem,auto)] items-center gap-2">
+                
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold">
+                    <span>📍</span>
+                    <select name="city" class="bg-transparent outline-none w-full cursor-pointer text-slate-900">
+                        <option value="Bangkok" <%= selectedCity === 'Bangkok' ? 'selected' : '' %>>Bangkok, Thailand</option>
+                        <option value="Chiang Mai" <%= selectedCity === 'Chiang Mai' ? 'selected' : '' %>>Chiang Mai, Thailand</option>
+                        <option value="Phuket" <%= selectedCity === 'Phuket' ? 'selected' : '' %>>Phuket, Thailand</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
+                    <label class="min-w-0">
+                        <span class="block text-[9px] text-slate-500">Check-in</span>
+                        <input type="date" name="checkIn" id="hotelCheckIn" value="<%= stayInfo.checkIn %>" required class="block w-full min-w-0 max-w-full text-[10px] sm:text-xs bg-transparent outline-none">
+                    </label>
+                    <label class="min-w-0">
+                        <span class="block text-[9px] text-slate-500">Check-out</span>
+                        <input type="date" name="checkOut" id="hotelCheckOut" value="<%= stayInfo.checkOut %>" required class="block w-full min-w-0 max-w-full text-[10px] sm:text-xs bg-transparent outline-none">
+                    </label>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
+                    <label class="block text-[9px] text-slate-500">Guests · <span id="hotelGuestTotal"><%= stayInfo.guestCount %></span> / 50</label>
+                    <input type="hidden" name="adults" id="hotelAdultsInput" value="<%= stayInfo.adults %>">
+                    <input type="hidden" name="children" id="hotelChildrenInput" value="<%= stayInfo.children %>">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                        <% [['adults', 'Adults'], ['children', 'Children']].forEach(([type, label]) => { %>
+                            <div class="flex items-center justify-between gap-1">
+                                <span class="text-[10px]"><%= label %></span>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" data-hotel-guest="<%= type %>" data-step="-1" aria-label="Decrease <%= label.toLowerCase() %>" class="w-6 h-6 rounded-full border border-slate-300 disabled:opacity-40">−</button>
+                                    <span id="hotel<%= type === 'adults' ? 'Adults' : 'Children' %>Count" class="w-5 text-center text-xs font-bold"><%= stayInfo[type] %></span>
+                                    <button type="button" data-hotel-guest="<%= type %>" data-step="1" aria-label="Increase <%= label.toLowerCase() %>" class="w-6 h-6 rounded-full border border-slate-300">+</button>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
+                    <label class="block text-[9px] text-slate-500">Rooms</label>
+                    <input type="hidden" name="rooms" id="hotelRoomsInput" value="<%= stayInfo.rooms %>">
+                    <div class="flex items-center gap-2 mt-1">
+                        <button type="button" data-hotel-room-step="-1" aria-label="Decrease rooms" class="w-6 h-6 rounded-full border border-slate-300 disabled:opacity-40">−</button>
+                        <span id="hotelRoomsCount" class="w-5 text-center text-xs font-bold"><%= stayInfo.rooms %></span>
+                        <button type="button" data-hotel-room-step="1" aria-label="Increase rooms" class="w-6 h-6 rounded-full border border-slate-300 disabled:opacity-40">+</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition shadow flex items-center gap-1">
+                    <span>🔍</span> Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content Grid Layout -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+            <!-- ================= LEFT SIDEBAR FILTERS ================= -->
+            <aside class="lg:col-span-1 space-y-4">
+                
+                <!-- Map Box -->
+                <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm h-28 bg-slate-200 flex items-center justify-center bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=400&q=80');">
+                    <div class="absolute inset-0 bg-slate-900/30"></div>
+                    <button class="relative z-10 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md">
+                        📍 Show on Map
+                    </button>
+                </div>
+
+                <form action="/hotels/search" method="GET" class="space-y-4">
+                    <input type="hidden" name="city" value="<%= selectedCity %>">
+                    <input type="hidden" name="checkIn" value="<%= stayInfo.checkIn %>">
+                    <input type="hidden" name="checkOut" value="<%= stayInfo.checkOut %>">
+                    <input type="hidden" name="adults" value="<%= stayInfo.adults %>">
+                    <input type="hidden" name="children" value="<%= stayInfo.children %>">
+                    <input type="hidden" name="rooms" value="<%= stayInfo.rooms %>">
+
+                    <!-- ECO CERTIFICATES FILTER (ส่วนเพิ่มพิเศษรักษ์โลก) -->
+                    <div class="bg-emerald-950 text-white p-4 rounded-2xl space-y-3 shadow-md border border-emerald-800">
+                        <div class="flex items-center justify-between border-b border-emerald-800 pb-2">
+                            <h3 class="font-bold text-xs text-emerald-300 uppercase tracking-wider flex items-center gap-1">
+                                <span>🌿</span> Eco Certificates
+                            </h3>
+                            <span class="text-[10px] bg-emerald-800 text-emerald-200 px-2 py-0.5 rounded-full">Green Stay</span>
+                        </div>
+                        <div class="space-y-2 text-xs">
+                            <% ecoCertsList.forEach(cert => { %>
+                                <label class="flex items-center gap-2 cursor-pointer hover:text-emerald-300 transition">
+                                    <input type="checkbox" name="certs" value="<%= cert.name %>" 
+                                        <%= selectedCerts.includes(cert.name) ? 'checked' : '' %>
+                                        onchange="this.form.submit()"
+                                        class="rounded accent-emerald-500">
+                                    <span class="text-[11px] text-emerald-100"><%= cert.icon %> <%= cert.name %></span>
+                                </label>
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Filters Accordion Box (อิงตามรูปตัวอย่าง Trip.com) -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-5 text-xs text-slate-700 shadow-sm">
+                        
+                        <!-- Popular Filters -->
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Popular filters for <%= selectedCity %></h4>
+                            <div class="space-y-1.5">
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> <span class="text-amber-500">★★★★★</span></label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Hotel</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Breakfast included</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Parking available</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Great 9+ <span class="text-[10px] text-slate-400">(Based on reviews)</span></label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Free cancellation</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Pool</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Homes & apts</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Pets welcome</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Bathtub</label>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- Budget Range -->
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Budget (฿0 - ฿6,500+)</h4>
+                            <div class="grid grid-cols-2 gap-1.5 text-[10px]">
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">฿0 - ฿1,000</button>
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">฿1,000 - ฿1,500</button>
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">฿1,500 - ฿2,000</button>
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">฿2,000 - ฿3,500</button>
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">฿3,500 - ฿6,500</button>
+                                <button type="button" class="bg-slate-50 border border-slate-200 py-1.5 px-2 rounded hover:border-blue-500">> ฿6,500</button>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- Property Type -->
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Property Type</h4>
+                            <div class="space-y-1.5">
+                                <label class="flex items-center gap-2"><input type="checkbox" checked class="rounded"> Hotels</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Homes & apts</label>
+                                <label class="flex items-center gap-2"><input type="checkbox" class="rounded"> Hostels</label>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- Star rating -->
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Star rating</h4>
+                            <div class="space-y-1.5 text-amber-500">
+                                <label class="flex items-center gap-2 text-slate-700"><input type="checkbox" class="rounded"> <span class="text-amber-500">★★★★★</span></label>
+                                <label class="flex items-center gap-2 text-slate-700"><input type="checkbox" class="rounded"> <span class="text-amber-500">★★★★</span></label>
+                                <label class="flex items-center gap-2 text-slate-700"><input type="checkbox" class="rounded"> <span class="text-amber-500">★★★</span></label>
+                                <label class="flex items-center gap-2 text-slate-700"><input type="checkbox" class="rounded"> <span class="text-amber-500">★★</span></label>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <!-- Location -->
+                        <div class="space-y-2">
+                            <h4 class="font-bold text-slate-900 text-xs">Location</h4>
+                            <div class="space-y-1.5">
+                                <label class="flex items-center gap-2"><input type="radio" name="loc"> Siam</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="loc"> Sukhumvit</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="loc"> Pratunam Market</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </aside>
+
+            <!-- ================= RIGHT SEARCH RESULTS LIST ================= -->
+            <section class="lg:col-span-3 space-y-4">
+                
+                <!-- First booking offer Promo Banner -->
+                <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="font-bold text-blue-900">First booking offer!</span>
+                            <span class="text-slate-500 text-[11px]">We'll apply the best discount for you at check-out</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 text-[11px]">
+                            <span class="bg-white text-rose-600 border border-rose-200 px-2 py-0.5 rounded font-semibold">🏷️ Up to ฿200 off New user promo code</span>
+                            <span class="bg-white text-rose-600 border border-rose-200 px-2 py-0.5 rounded font-semibold">⚡ Up to 20% off First Booking Deal</span>
+                        </div>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition whitespace-nowrap">
+                        Claim All
+                    </button>
+                </div>
+
+                <!-- Count Header & Sort Dropdown -->
+                <div class="flex justify-between items-center text-xs">
+                    <h2 class="font-extrabold text-slate-900 text-sm">
+                        <%= totalFound %> properties found
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <span class="text-slate-500">Sort by:</span>
+                        <select class="bg-white border border-slate-300 rounded-lg p-1.5 text-xs font-semibold outline-none cursor-pointer">
+                            <option>Trip.com recommended</option>
+                            <option>Lowest CO₂ Emissions (Eco First)</option>
+                            <option>Price (low to high)</option>
+                            <option>User rating (high to low)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- HOTEL CARDS LIST -->
+                <% if (hotels.length === 0) { %>
+                    <div class="bg-white border border-amber-200 rounded-2xl p-6 text-center space-y-2">
+                        <h3 class="font-bold text-slate-900">No rooms available for this group</h3>
+                        <p class="text-sm text-slate-600">
+                            <% if (stayInfo.guestCount > 4) { %>
+                                Our listed room types accommodate up to 4 guests per booking. Reduce the number of guests to see available hotels.
+                            <% } else { %>
+                                No properties match your selected filters. Try changing the eco certificates or destination.
+                            <% } %>
+                        </p>
+                    </div>
+                <% } else { %>
+                <div class="space-y-4">
+                    <% hotels.forEach(hotel => { %>
+                        <% const bookingMultiplier = stayInfo.rooms * stayInfo.nights; %>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col md:flex-row">
+                            
+                            <!-- Image Section -->
+                            <div class="relative md:w-72 h-52 md:h-auto flex-shrink-0">
+                                <a href="/hotels/<%= hotel.id %>?<%= stayInfo.queryString %>">
+                                    <img src="<%= hotel.image %>" alt="<%= hotel.name %>" class="w-full h-full object-cover hover:opacity-95 transition">
+                                </a>
+                                <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-1.5 rounded-full shadow text-xs">
+                                    🤍
+                                </button>
+                                <span class="absolute bottom-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded">
+                                    1/12 photos
+                                </span>
+                            </div>
+
+                            <!-- Info Section -->
+                            <div class="p-4 flex-grow flex flex-col justify-between space-y-3">
+                                <div>
+                                    <!-- Title & Star Rating (เพิ่มลิงก์เข้าหน้ารายละเอียด) -->
+                                    <div class="flex items-start justify-between gap-2">
+                                        <div>
+                                            <a href="/hotels/<%= hotel.id %>?<%= stayInfo.queryString %>" class="font-bold text-base text-slate-900 hover:text-blue-600 cursor-pointer flex items-center gap-1.5">
+                                                <span><%= hotel.name %></span>
+                                                <span class="text-amber-400 text-xs">
+                                                    <% for(let i=0; i<hotel.stars; i++) { %>★<% } %>
+                                                </span>
+                                            </a>
+                                            
+                                            <!-- Review Rating -->
+                                            <div class="flex items-center gap-2 mt-1 text-xs">
+                                                <span class="bg-blue-600 text-white font-extrabold px-1.5 py-0.5 rounded text-[11px]">
+                                                    <%= hotel.rating %>/10
+                                                </span>
+                                                <span class="font-bold text-blue-900"><%= hotel.ratingLabel %></span>
+                                                <span class="text-slate-400 text-[11px]"><%= hotel.reviewsCount.toLocaleString() %> reviews</span>
+                                                <span class="text-slate-500 text-[11px] hidden sm:inline">• "<%= hotel.reviewQuote %>"</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Address -->
+                                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                        <span>📍 <%= hotel.address %></span>
+                                        <a href="/hotels/<%= hotel.id %>?<%= stayInfo.queryString %>#map-section" class="text-blue-600 font-semibold hover:underline">Show on Map</a>
+                                    </p>
+
+                                    <!-- Eco Certificate Badges -->
+                                    <div class="flex flex-wrap gap-1.5 mt-2.5">
+                                        <% hotel.ecoCertificates.forEach(cert => { %>
+                                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                                🌿 <%= cert %>
+                                            </span>
+                                        <% }); %>
+                                        <span class="bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-bold px-2 py-0.5 rounded-md">
+                                            📉 <%= hotel.carbonRating %>
+                                        </span>
+                                    </div>
+
+                                    <!-- Room Type Box -->
+                                    <div class="mt-3 bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-xs space-y-0.5">
+                                        <p class="font-bold text-slate-800"><%= hotel.roomType %> <span class="text-slate-400 font-normal">👤👤 🛏️</span></p>
+                                        <p class="text-[11px] text-slate-500"><%= hotel.urgencyTag %></p>
+                                    </div>
+                                </div>
+
+                                <!-- Price Footer (ปรับปุ่ม Check Availability เป็นลิงก์) -->
+                                <div class="flex items-end justify-between border-t border-slate-100 pt-3">
+                                    <div>
+                                        <span class="bg-rose-50 text-rose-600 text-[10px] font-bold px-2 py-0.5 rounded border border-rose-200">
+                                            <%= hotel.discountTag %>
+                                        </span>
+                                    </div>
+
+                                    <div class="text-right space-y-1">
+                                        <div class="flex items-center justify-end gap-2 text-xs">
+                                            <span class="text-slate-400 line-through">฿<%= (hotel.priceOriginalTHB * bookingMultiplier).toLocaleString() %></span>
+                                            <span class="text-2xl font-black text-blue-600">฿<%= (hotel.priceDiscountTHB * bookingMultiplier).toLocaleString() %></span>
+                                        </div>
+                                        <p class="text-[10px] text-slate-400">Total for <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %> × <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %> (incl. taxes & fees): ฿<%= (hotel.totalWithTaxesTHB * bookingMultiplier).toLocaleString() %></p>
+
+                                        <!-- ปุ่มเปลี่ยนเป็นแท็ก <a> วิ่งไปยัง /hotels/:id -->
+                                        <a href="/hotels/<%= hotel.id %>?<%= stayInfo.queryString %>" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                                            Check Availability &gt;
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    <% }); %>
+                </div>
+                <% } %>
+
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const hotelCheckIn = document.getElementById('hotelCheckIn');
+        const hotelCheckOut = document.getElementById('hotelCheckOut');
+        const hotelGuestValues = {
+            adults: Number('<%= stayInfo.adults %>'),
+            children: Number('<%= stayInfo.children %>')
+        };
+        let hotelRooms = Number('<%= stayInfo.rooms %>');
+        const hotelGuestTotal = () => hotelGuestValues.adults + hotelGuestValues.children;
+        const localDateValue = date => {
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toISOString().slice(0, 10);
+        };
+        const todayValue = localDateValue(new Date());
+        hotelCheckIn.min = todayValue;
+        hotelCheckOut.min = hotelCheckIn.value;
+        hotelCheckIn.addEventListener('change', () => {
+            hotelCheckOut.min = hotelCheckIn.value;
+            if (hotelCheckOut.value <= hotelCheckIn.value) {
+                const nextDay = new Date(`${hotelCheckIn.value}T00:00:00`);
+                nextDay.setDate(nextDay.getDate() + 1);
+                hotelCheckOut.value = localDateValue(nextDay);
+            }
+        });
+        const updateHotelGuestControls = () => {
+            document.querySelectorAll('[data-hotel-guest]').forEach(button => {
+                const type = button.dataset.hotelGuest;
+                button.disabled = button.dataset.step === '-1'
+                    ? hotelGuestValues[type] <= (type === 'adults' ? 1 : 0)
+                    : hotelGuestTotal() >= 50;
+            });
+        };
+        document.querySelectorAll('[data-hotel-guest]').forEach(button => {
+            button.addEventListener('click', () => {
+                const type = button.dataset.hotelGuest;
+                const nextValue = hotelGuestValues[type] + Number(button.dataset.step);
+                if (nextValue < (type === 'adults' ? 1 : 0)) return;
+                if (button.dataset.step === '1' && hotelGuestTotal() >= 50) return;
+                hotelGuestValues[type] = nextValue;
+                document.getElementById(`hotel${type === 'adults' ? 'Adults' : 'Children'}Count`).textContent = nextValue;
+                document.getElementById(`hotel${type === 'adults' ? 'Adults' : 'Children'}Input`).value = nextValue;
+                document.getElementById('hotelGuestTotal').textContent = hotelGuestTotal();
+                updateHotelGuestControls();
+            });
+        });
+        document.querySelectorAll('[data-hotel-room-step]').forEach(button => {
+            button.addEventListener('click', () => {
+                const nextRooms = hotelRooms + Number(button.dataset.hotelRoomStep);
+                if (nextRooms < 1 || nextRooms > 50) return;
+                hotelRooms = nextRooms;
+                document.getElementById('hotelRoomsCount').textContent = hotelRooms;
+                document.getElementById('hotelRoomsInput').value = hotelRooms;
+                document.querySelectorAll('[data-hotel-room-step]').forEach(roomButton => {
+                    const step = Number(roomButton.dataset.hotelRoomStep);
+                    roomButton.disabled = step < 0 ? hotelRooms <= 1 : hotelRooms >= 50;
+                });
+            });
+        });
+        document.querySelector('[data-hotel-room-step="-1"]').disabled = hotelRooms <= 1;
+        updateHotelGuestControls();
+    </script>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+
+</body>
+</html>

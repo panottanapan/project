@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- Main Checkout Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        
+        <!-- Top Green Savings Banner -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 mb-6 text-xs text-emerald-900 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+            <div class="flex items-center gap-2 font-bold">
+                <span>⚡ Instant confirmation</span>
+                <span class="text-emerald-300">•</span>
+                <span>🌱 Room price is calculated for your selected guests and stay dates.</span>
+            </div>
+            <div class="flex items-center gap-1 text-slate-600 font-medium">
+                <span>Sign in or register to earn up to <strong class="text-emerald-700">55 Eco-Coins (≈ ฿18.46)</strong> after check-out &gt;</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <!-- ================= LEFT COLUMN: FORM & PAYMENT ================= -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- 1. WHO'S STAYING CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h2 class="text-lg font-bold text-slate-900">Who's staying?</h2>
+                        <button type="button" class="text-xs font-bold text-blue-600 hover:underline">+ Add New Guest (Optional)</button>
+                    </div>
+                    <p class="text-xs text-slate-500">Guest names must match the valid ID which will be used at check-in.</p>
+
+                    <form id="checkout-form" action="/hotels/checkout" method="POST" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">First name *</label>
+                                <input type="text" required placeholder="Use only English letters" class="w-full text-xs p-3 rounded-xl border border-slate-300 outline-none focus:border-blue-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Last name *</label>
+                                <input type="text" required placeholder="Use only English letters" class="w-full text-xs p-3 rounded-xl border border-slate-300 outline-none focus:border-blue-600">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Email *</label>
+                                <input type="email" required placeholder="Booking confirmation will be sent here" class="w-full text-xs p-3 rounded-xl border border-slate-300 outline-none focus:border-blue-600">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Phone number *</label>
+                                <div class="flex">
+                                    <span class="bg-slate-100 border border-r-0 border-slate-300 px-3 py-3 rounded-l-xl text-xs font-bold text-slate-600">+66</span>
+                                    <input type="tel" required placeholder="Phone number" class="w-full text-xs p-3 rounded-r-xl border border-slate-300 outline-none focus:border-blue-600">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 2. SPECIAL REQUESTS CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-3">
+                    <h2 class="text-base font-bold text-slate-900">Special Requests <span class="text-xs text-slate-400 font-normal">(Optional)</span></h2>
+                    <p class="text-xs text-slate-500">The property will do its best, but cannot guarantee to fulfill all requests.</p>
+
+                    <div class="space-y-2 text-xs pt-1">
+                        <p class="font-bold text-slate-700">Elevator proximity</p>
+                        <div class="flex items-center gap-6 text-slate-600">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="elevator" checked class="accent-blue-600"> Away from elevator
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="elevator" class="accent-blue-600"> Near elevator
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 text-xs">
+                        <label class="flex items-center gap-2 text-emerald-800 font-medium cursor-pointer">
+                            <input type="checkbox" checked class="rounded accent-emerald-600"> 🌱 Request Eco-Bedlinen setup (Change towel every 3 days to save water)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 3. PROMO CODE CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-2">
+                    <h2 class="text-base font-bold text-slate-900">Available for This Booking</h2>
+                    <details class="text-xs text-blue-600 font-bold cursor-pointer">
+                        <summary class="hover:underline">Enter promo code ∨</summary>
+                        <div class="flex gap-2 mt-2">
+                            <input type="text" placeholder="Promo code" class="p-2 border border-slate-300 rounded-lg text-xs w-48 text-slate-800 uppercase outline-none">
+                            <button class="bg-slate-900 text-white font-bold px-4 py-2 rounded-lg text-xs">Apply</button>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 4. PAYMENT METHOD CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
+                    <h2 class="text-lg font-bold text-slate-900">How would you like to pay?</h2>
+
+                    <!-- Credit / Debit Card Option -->
+                    <div class="space-y-4 border border-blue-200 bg-blue-50/20 p-4 rounded-xl">
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-slate-900">
+                                <input type="radio" name="payment" checked class="accent-blue-600"> Credit/Debit Card
+                            </label>
+                            <div class="flex gap-1 text-xs">
+                                <span class="bg-white border border-slate-200 px-2 py-0.5 rounded font-bold text-[10px] text-blue-800">VISA</span>
+                                <span class="bg-white border border-slate-200 px-2 py-0.5 rounded font-bold text-[10px] text-rose-600">MC</span>
+                                <span class="bg-white border border-slate-200 px-2 py-0.5 rounded font-bold text-[10px] text-emerald-600">JCB</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <input type="text" placeholder="Bank card no." class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-blue-600">
+                            <input type="text" placeholder="Cardholder name" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-blue-600">
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="text" placeholder="Expiration date (MM/YY)" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-blue-600">
+                                <input type="password" maxlength="4" placeholder="CVV/CVC" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white outline-none focus:border-blue-600">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Payment Methods -->
+                    <div class="space-y-2 border border-slate-200 p-4 rounded-xl">
+                        <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-slate-700">
+                            <input type="radio" name="payment" class="accent-blue-600"> Other payment methods (QR PromptPay / Bank Transfer / Google Pay)
+                        </label>
+                        <p class="text-[11px] text-slate-500 pl-6">Pay on next page using PromptPay QR code, Thai Bank App, or Mobile Wallet.</p>
+                    </div>
+
+                    <!-- Free Cancellation Notice + Submit Button -->
+                    <div class="space-y-3 pt-2">
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-800 font-semibold flex items-center gap-2">
+                            <span>🛡️</span>
+                            <span>Free Cancellation before 18:00, Oct 14</span>
+                        </div>
+
+                        <button type="submit" form="checkout-form" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black text-base py-4 rounded-xl transition shadow-lg text-center">
+                            Book now
+                        </button>
+
+                        <div class="flex justify-center items-center gap-6 text-[11px] text-slate-500 font-medium">
+                            <span>✔ We price match</span>
+                            <span>🔒 Secure payment SSL 256-bit</span>
+                        </div>
+
+                        <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                            By submitting this booking, I acknowledge that I have read and agree to GreenTravel's Terms of Use and Privacy Statement.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= RIGHT COLUMN: SUMMARY & BREAKDOWN ================= -->
+            <div class="lg:col-span-1 space-y-4">
+
+                <!-- 1. HOTEL SUMMARY CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                    <div class="flex gap-3">
+                        <img src="<%= hotel.image %>" alt="<%= hotel.name %>" class="w-20 h-20 rounded-xl object-cover flex-shrink-0">
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-900 leading-snug"><%= hotel.name %></h3>
+                            <div class="text-amber-400 text-xs mt-0.5">★★★★</div>
+                            <div class="flex items-center gap-1 mt-1 text-[11px]">
+                                <span class="bg-blue-600 text-white font-extrabold px-1 rounded"><%= hotel.rating %>/10</span>
+                                <span class="font-bold text-blue-900">Great</span>
+                                <span class="text-slate-400">(<%= hotel.reviewsCount.toLocaleString() %> reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3 space-y-1 text-xs text-slate-600">
+                        <h4 class="font-bold text-slate-900"><%= roomSelection.room.name %></h4>
+                        <p class="text-[11px] text-slate-500">👤 <%= stayInfo.guestSummary %> · 🏨 <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %> · <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %> · 🛏️ <%= roomSelection.room.bed %></p>
+                        <p class="text-[11px] text-slate-700"><%= roomSelection.plan.title %> · <%= roomSelection.plan.breakfast %></p>
+                        <p class="text-[11px] <%= roomSelection.plan.isFreeCancel ? 'text-emerald-700' : 'text-slate-500' %> font-semibold"><%= roomSelection.plan.cancellation %></p>
+                    </div>
+                </div>
+
+                <!-- 2. CHECK-IN / CHECK-OUT DATES CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2 text-xs">
+                    <div class="font-bold text-slate-900 text-sm"><%= stayInfo.checkInLabel %> – <%= stayInfo.checkOutLabel %></div>
+                    <div class="grid grid-cols-2 text-slate-500 text-[11px] pt-1">
+                        <div>Check-in: 14:00–24:00</div>
+                        <div>Check-out: 00:30–12:00</div>
+                    </div>
+                    <div class="pt-2 border-t border-slate-100 flex gap-4 text-slate-700 font-semibold">
+                        <span>🗓️ <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %></span>
+                        <span>🏨 <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %></span>
+                        <span>👤 <%= stayInfo.guestSummary %></span>
+                    </div>
+                </div>
+
+                <!-- 3. PRICE DETAILS CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+                    <h3 class="font-bold text-sm text-slate-900 border-b border-slate-100 pb-2">Price Details</h3>
+
+                    <div class="space-y-1.5 text-xs text-slate-600">
+                        <div class="flex justify-between font-semibold text-slate-800">
+                            <span><%= roomSelection.room.name %> rate before discount · <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %> × <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %></span>
+                            <span>฿<%= roomSelection.originalTotal.toLocaleString() %>.00</span>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-emerald-700">
+                            <span>Room-rate savings</span>
+                            <span>- ฿<%= roomSelection.savings.toLocaleString() %>.00</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-2 space-y-1 text-[11px] text-slate-500">
+                        <div class="flex justify-between">
+                            <span>Taxes & fees</span>
+                            <span>฿<%= roomSelection.taxesAndFees.toLocaleString() %>.00</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 pl-2">
+                            <span>VAT (7%)</span>
+                            <span>฿<%= Math.round(roomSelection.taxesAndFees * 0.3955).toLocaleString() %>.00</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 pl-2">
+                            <span>Service charge</span>
+                            <span>฿<%= (roomSelection.taxesAndFees - Math.round(roomSelection.taxesAndFees * 0.3955)).toLocaleString() %>.00</span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-200 pt-3 flex justify-between items-end">
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm">Total</span>
+                            <span class="text-[10px] text-emerald-700 block font-semibold">🌱 Saved ฿<%= roomSelection.savings.toLocaleString() %>.00</span>
+                        </div>
+                        <div class="text-2xl font-black text-blue-600">
+                            ฿<%= roomSelection.total.toLocaleString() %>.00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. CANCELLATION POLICY CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2 text-xs">
+                    <h3 class="font-bold text-slate-900 text-xs">Cancellation policy</h3>
+                    <div class="space-y-1 text-[11px]">
+                        <p class="<%= roomSelection.plan.isFreeCancel ? 'text-emerald-700' : 'text-slate-600' %> font-bold"><%= roomSelection.plan.cancellation %></p>
+                        <% if (roomSelection.plan.isFreeCancel) { %>
+                            <p class="text-slate-700 font-semibold mt-2">Cancellation fee after the free-cancellation period: ฿<%= roomSelection.total.toLocaleString() %>.00</p>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- 5. REWARDS CARD -->
+                <div class="bg-emerald-950 text-emerald-100 rounded-2xl p-4 shadow-sm text-xs space-y-1 border border-emerald-800">
+                    <span class="font-bold text-emerald-300 block">🎁 Rewards</span>
+                    <p>Earn <strong class="text-white">55 Green Eco-Coins (≈ ฿18.46)</strong> after your stay to offset future bookings.</p>
+                </div>
+
+                <!-- 6. FINE PRINT CARD -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm text-[11px] text-slate-500 space-y-1">
+                    <span class="font-bold text-slate-700 block">Fine Print</span>
+                    <p>This property requires a key deposit at check-in. The deposit costs ฿1,000.00 per day and can be paid by cash or credit card.</p>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+
+</body>
+</html>

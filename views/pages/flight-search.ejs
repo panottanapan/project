@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+    <!-- TOP SEARCH PARAMS HEADER BAR -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm py-3 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3 text-xs font-extrabold text-slate-900">
+                <span class="bg-emerald-800 text-white px-2.5 py-1 rounded-md">Round-trip</span>
+                <span><%= searchParams.origin %> ⇌ <%= searchParams.destination %></span>
+                <span class="text-slate-400 font-normal">| <%= searchParams.dates %> · <%= passengerSummary %></span>
+            </div>
+
+            <div class="flex items-center gap-2 text-xs">
+                <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                    🌐 Google TIM API Metrics Active
+                </span>
+                <a href="/flights" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl border border-slate-200">
+                    Modify search ✎
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 w-full flex-grow">
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- SIDEBAR FILTERS -->
+            <aside class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-5 space-y-6 shadow-sm">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-extrabold text-sm text-slate-900">Filters</h3>
+                    <button onclick="resetFilters()" class="text-xs text-blue-600 font-bold hover:underline">Reset all</button>
+                </div>
+
+                <div class="space-y-2.5 text-xs border-b border-slate-100 pb-4">
+                    <p class="font-extrabold text-slate-800">Recommended</p>
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                        <input type="checkbox" id="filterNonstop" onchange="renderFlights()" class="rounded text-blue-600 focus:ring-0">
+                        <span>✈️ Nonstop flights only</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                        <input type="checkbox" id="filterLowCO2" onchange="renderFlights()" class="rounded text-blue-600 focus:ring-0">
+                        <span>🌱 Low CO₂ emissions only</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                        <input type="checkbox" id="filterHideBudget" onchange="renderFlights()" class="rounded text-blue-600 focus:ring-0">
+                        <span>Hide budget airlines</span>
+                    </label>
+                </div>
+
+                <div class="space-y-2.5 text-xs border-b border-slate-100 pb-4">
+                    <p class="font-extrabold text-slate-800">Airlines</p>
+                    <div id="airlineFilters" class="space-y-2"></div>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                    <p class="font-extrabold text-slate-800">Departure time</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="space-y-1 text-[10px] font-semibold text-slate-500">
+                            From
+                            <input type="time" id="filterDepartureFrom" value="00:00" onchange="renderFlights()" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs text-slate-700">
+                        </label>
+                        <label class="space-y-1 text-[10px] font-semibold text-slate-500">
+                            To
+                            <input type="time" id="filterDepartureTo" value="23:59" onchange="renderFlights()" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs text-slate-700">
+                        </label>
+                    </div>
+                    <p id="departureTimeError" class="hidden text-[10px] text-rose-600">End time must be after start time.</p>
+                </div>
+            </aside>
+
+            <!-- FLIGHT RESULTS COLUMN -->
+            <section class="lg:col-span-9 space-y-4">
+
+                <!-- Step 2 Banner (Shows selected outbound flight when choosing return) -->
+                <div id="selectedOutboundBanner" class="hidden bg-slate-900 text-white p-4 rounded-2xl shadow-md border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center text-xs border-b border-slate-800 pb-2">
+                        <span class="font-bold text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Step 2: Select Returning Flight
+                        </span>
+                        <button onclick="resetToStep1()" class="text-blue-400 hover:text-blue-300 font-bold underline text-[11px]">
+                            Change outbound flight ✎
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-blue-600 text-white font-extrabold px-2.5 py-1 rounded-md text-[11px]">Outbound</span>
+                            <div>
+                                <p class="font-extrabold text-sm text-white" id="outboundBannerTitle">Nok Air • DMK ➔ CNX</p>
+                                <p class="text-[11px] text-slate-400" id="outboundBannerTime">Fri, Oct 16 | 18:20 – 19:35</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flight List Box -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                        <div>
+                            <h2 class="font-extrabold text-base text-white" id="stepMainTitle">1. Departures to <%= searchParams.destination %></h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Calculated with Google TIM API</p>
+                        </div>
+                        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full font-bold border border-slate-700" id="flightCountBadge">Searching...</span>
+                    </div>
+
+                    <div id="flightListContainer" class="divide-y divide-slate-100">
+                        <!-- Dynamic Flight Cards -->
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- SELECT FARE MODAL (STEP 3) -->
+    <div id="fareModal" class="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 space-y-6 p-6 relative">
+            
+            <div class="flex justify-between items-start border-b border-slate-100 pb-4">
+                <div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-300">
+                        🌱 Verified Google TIM Carbon Choice
+                    </span>
+                    <h2 class="text-xl font-extrabold text-slate-900 mt-1" id="fareModalRoute">Bangkok ⇌ Chiang Mai</h2>
+                    <p class="text-xs text-slate-500 mt-0.5" id="fareModalSub">Chiang Mai (CNX) ➔ Bangkok (DMK) | Sun, Oct 18</p>
+                </div>
+                <button onclick="closeFareModal()" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full font-bold text-sm flex items-center justify-center">✕</button>
+            </div>
+
+            <h3 class="text-base font-extrabold text-slate-900">Select Fare Option</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Fare Option 1 -->
+                <div class="border border-slate-200 rounded-2xl p-5 space-y-4 flex flex-col justify-between hover:border-blue-500 transition">
+                    <div class="space-y-3 text-xs">
+                        <span id="standardFarePrice" class="text-2xl font-black text-blue-600">฿ 3,125</span>
+                        <p class="font-extrabold text-slate-800">Standard Economy</p>
+                        <p class="text-slate-600">🧳 Carry-on: 7 kg</p>
+                        <p class="text-rose-600">✖ Checked baggage: Not included</p>
+                    </div>
+                    <button onclick="confirmBooking('Standard Fare')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition text-xs">
+                        Select Standard
+                    </button>
+                </div>
+
+                <!-- Fare Option 2 (Recommended TripFlex) -->
+                <div class="border-2 border-emerald-500 bg-emerald-50/20 rounded-2xl p-5 space-y-4 flex flex-col justify-between relative shadow-md">
+                    <span class="absolute -top-3 left-4 bg-emerald-600 text-white text-[10px] font-extrabold px-3 py-0.5 rounded-full">
+                        Recommended Option
+                    </span>
+                    <div class="space-y-3 text-xs">
+                        <span id="tripFlexFarePrice" class="text-2xl font-black text-blue-600">฿ 3,550</span>
+                        <p class="font-extrabold text-emerald-900">TripFlex EasyCancel & Change</p>
+                        <p class="text-emerald-800 font-bold">✔ Free Date Change</p>
+                        <p class="text-emerald-800 font-bold">✔ Free Cancellation</p>
+                    </div>
+                    <button onclick="confirmBooking('TripFlex Flexible Fare')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition text-xs">
+                        Select TripFlex
+                    </button>
+                </div>
+
+                <!-- Fare Option 3 -->
+                <div class="border border-slate-200 rounded-2xl p-5 space-y-4 flex flex-col justify-between hover:border-blue-500 transition">
+                    <div class="space-y-3 text-xs">
+                        <span id="baggageFarePrice" class="text-2xl font-black text-blue-600">฿ 3,575</span>
+                        <p class="font-extrabold text-slate-800">Checked Baggage Included</p>
+                        <p class="text-emerald-700 font-bold">🧳 Checked Baggage: 15 kg</p>
+                    </div>
+                    <button onclick="confirmBooking('Baggage Included Fare')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition text-xs">
+                        Select Baggage Fare
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <%- include('../partials/footer') %>
+
+    <script>
+        const outboundFlights = [
+            { id: 'out1', airline: 'Nok Air', budgetAirline: true, carrier: 'DD', flightNum: '124', logo: '🟡', depTime: '18:20', arrTime: '19:35', originCode: 'DMK', destCode: 'CNX', origin: 'Bangkok (DMK)', dest: 'Chiang Mai (CNX)', duration: '1h 15m', nonstop: true, price: 3125, defaultKg: 43.5 },
+            { id: 'out2', airline: 'Thai Vietjet Air', budgetAirline: true, carrier: 'VZ', flightNum: '108', logo: '🔴', depTime: '18:35', arrTime: '20:00', originCode: 'BKK', destCode: 'CNX', origin: 'Bangkok (BKK)', dest: 'Chiang Mai (CNX)', duration: '1h 25m', nonstop: true, price: 3225, defaultKg: 45.0 },
+            { id: 'out3', airline: 'Thai AirAsia', budgetAirline: true, carrier: 'FD', flightNum: '3438', logo: '🔴', depTime: '17:35', arrTime: '19:00', originCode: 'DMK', destCode: 'CNX', origin: 'Bangkok (DMK)', dest: 'Chiang Mai (CNX)', duration: '1h 25m', nonstop: true, price: 3252, defaultKg: 44.2 },
+            { id: 'out4', airline: 'Bangkok Airways', budgetAirline: false, carrier: 'PG', flightNum: '219', logo: '🔵', depTime: '08:00', arrTime: '09:20', originCode: 'BKK', destCode: 'CNX', origin: 'Bangkok (BKK)', dest: 'Chiang Mai (CNX)', duration: '1h 20m', nonstop: true, price: 4670, defaultKg: 52.0 }
+        ];
+
+        const returnFlights = [
+            { id: 'ret1', airline: 'Nok Air', budgetAirline: true, carrier: 'DD', flightNum: '125', logo: '🟡', depTime: '06:50', arrTime: '08:05', originCode: 'CNX', destCode: 'DMK', origin: 'Chiang Mai (CNX)', dest: 'Bangkok (DMK)', duration: '1h 15m', nonstop: true, price: 3225, defaultKg: 43.5 },
+            { id: 'ret2', airline: 'Thai Vietjet Air', budgetAirline: true, carrier: 'VZ', flightNum: '109', logo: '🔴', depTime: '06:35', arrTime: '07:55', originCode: 'CNX', destCode: 'BKK', origin: 'Chiang Mai (CNX)', dest: 'Bangkok (BKK)', duration: '1h 20m', nonstop: true, price: 3300, defaultKg: 45.0 }
+        ];
+
+        let currentStep = 1;
+        let selectedOutbound = null;
+        let selectedReturn = null;
+        let timEmissionsMap = {};
+        let emissionsFetchPromise;
+
+        function initializeAirlineFilters() {
+            const airlineNames = [...new Set([...outboundFlights, ...returnFlights].map(flight => flight.airline))].sort();
+            document.getElementById('airlineFilters').innerHTML = airlineNames.map(airline => `
+                <label class="flex items-center gap-2 cursor-pointer text-slate-700">
+                    <input type="checkbox" value="${airline}" onchange="renderFlights()" class="airline-filter rounded text-blue-600 focus:ring-0">
+                    <span>${airline}</span>
+                </label>
+            `).join('');
+        }
+
+        async function fetchEmissionsFromBackend(flightsList) {
+            if (!emissionsFetchPromise) {
+                emissionsFetchPromise = (async () => {
+                    try {
+                        const response = await fetch('/flights/api/calculate-emissions', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ flights: [...outboundFlights, ...returnFlights] })
+                        });
+                        const result = await response.json();
+                        if (result.success) {
+                            result.data.forEach(item => { timEmissionsMap[item.flightId] = item; });
+                        }
+                    } catch (err) {
+                        console.error("Google TIM Fetch Error", err);
+                    }
+                })();
+            }
+            await emissionsFetchPromise;
+        }
+
+        async function renderFlights() {
+            const container = document.getElementById('flightListContainer');
+            const list = (currentStep === 1) ? outboundFlights : returnFlights;
+
+            await fetchEmissionsFromBackend(list);
+
+            const nonstopOnly = document.getElementById('filterNonstop').checked;
+            const filterLowCO2 = document.getElementById('filterLowCO2').checked;
+            const hideBudgetAirlines = document.getElementById('filterHideBudget').checked;
+            const selectedAirlines = [...document.querySelectorAll('.airline-filter:checked')].map(input => input.value);
+            const departureFrom = document.getElementById('filterDepartureFrom').value;
+            const departureTo = document.getElementById('filterDepartureTo').value;
+            const invalidDepartureRange = departureFrom > departureTo;
+            document.getElementById('departureTimeError').classList.toggle('hidden', !invalidDepartureRange);
+
+            const filteredList = list.filter(f => {
+                const em = timEmissionsMap[f.id];
+                if (invalidDepartureRange) return false;
+                if (nonstopOnly && !f.nonstop) return false;
+                if (filterLowCO2 && em && !em.isLowEmission) return false;
+                if (hideBudgetAirlines && f.budgetAirline) return false;
+                if (selectedAirlines.length && !selectedAirlines.includes(f.airline)) return false;
+                if (f.depTime < departureFrom || f.depTime > departureTo) return false;
+                return true;
+            });
+
+            document.getElementById('flightCountBadge').innerText = `${filteredList.length} flights found`;
+
+            container.innerHTML = filteredList.map(f => {
+                const em = timEmissionsMap[f.id] || { actualKgCO2: f.defaultKg, savingPercentage: '16.0' };
+                
+                return `
+                <div class="p-4 sm:p-5 hover:bg-slate-50/80 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">${f.logo}</span>
+                            <span class="font-extrabold text-xs text-slate-900">${f.airline}</span>
+                            <span class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                                🌱 ${em.actualKgCO2} kg CO₂/px (-${em.savingPercentage}%)
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-6">
+                            <div>
+                                <p class="text-xl font-black text-slate-900">${f.depTime}</p>
+                                <p class="text-[11px] font-bold text-slate-500">${f.origin}</p>
+                            </div>
+
+                            <div class="text-center space-y-0.5">
+                                <p class="text-[10px] text-slate-400 font-semibold">${f.duration}</p>
+                                <div class="w-24 h-0.5 bg-slate-300 relative mx-auto">
+                                    <div class="w-2 h-2 rounded-full bg-blue-600 absolute -top-0.75 right-11"></div>
+                                </div>
+                                <p class="text-[10px] text-emerald-700 font-bold">${f.nonstop ? 'Nonstop' : '1 Stop'}</p>
+                            </div>
+
+                            <div>
+                                <p class="text-xl font-black text-slate-900">${f.arrTime}</p>
+                                <p class="text-[11px] font-bold text-slate-500">${f.dest}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex sm:flex-col items-end justify-between sm:justify-center border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100 gap-2">
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-blue-600">฿ ${f.price.toLocaleString()}</span>
+                            <span class="block text-[10px] text-emerald-700 font-semibold">Exclusive fare · Round-trip</span>
+                        </div>
+                        <button onclick="handleFlightSelect('${f.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow text-xs">
+                            Select &gt;
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+            if (!filteredList.length) {
+                container.innerHTML = '<p class="p-6 text-center text-sm text-slate-500">No flights match these filters. Try changing your selections.</p>';
+            }
+        }
+
+        function handleFlightSelect(flightId) {
+            if (currentStep === 1) {
+                selectedOutbound = outboundFlights.find(f => f.id === flightId);
+                currentStep = 2;
+                document.getElementById('selectedOutboundBanner').classList.remove('hidden');
+                document.getElementById('outboundBannerTitle').innerText = `${selectedOutbound.airline} • ${selectedOutbound.origin} ➔ ${selectedOutbound.dest}`;
+                document.getElementById('outboundBannerTime').innerText = `Fri, Oct 16 | ${selectedOutbound.depTime} – ${selectedOutbound.arrTime}`;
+                document.getElementById('stepMainTitle').innerText = '2. Returning to Bangkok';
+                renderFlights();
+            } else {
+                selectedReturn = returnFlights.find(f => f.id === flightId);
+                openFareModal();
+            }
+        }
+
+        function resetToStep1() {
+            currentStep = 1;
+            selectedOutbound = null;
+            document.getElementById('selectedOutboundBanner').classList.add('hidden');
+            document.getElementById('stepMainTitle').innerText = '1. Departures to Chiang Mai';
+            renderFlights();
+        }
+
+        function openFareModal() {
+            const selectedBasePrice = selectedOutbound ? selectedOutbound.price : outboundFlights[0].price;
+            document.getElementById('standardFarePrice').innerText = `฿ ${selectedBasePrice.toLocaleString()}`;
+            document.getElementById('tripFlexFarePrice').innerText = `฿ ${(selectedBasePrice + 425).toLocaleString()}`;
+            document.getElementById('baggageFarePrice').innerText = `฿ ${(selectedBasePrice + 450).toLocaleString()}`;
+            document.getElementById('fareModalRoute').innerText = `Bangkok ⇌ Chiang Mai`;
+            document.getElementById('fareModal').classList.remove('hidden');
+        }
+
+        function closeFareModal() {
+            document.getElementById('fareModal').classList.add('hidden');
+        }
+
+        // ปรับปรุงฟังก์ชันนี้ให้ทำการ REDIRECT ไปยังหน้า CHECKOUT แทนการแสดง alert()
+        function confirmBooking(fareType) {
+            const selectedBasePrice = selectedOutbound ? selectedOutbound.price : outboundFlights[0].price;
+            const originParam = encodeURIComponent(selectedOutbound ? selectedOutbound.origin : 'Bangkok (DMK)');
+            const destParam = encodeURIComponent(selectedOutbound ? selectedOutbound.dest : 'Chiang Mai (CNX)');
+            const fareParam = encodeURIComponent(fareType);
+            const passengerParams = new URLSearchParams({
+                adults: '<%= adults %>',
+                children: '<%= children %>',
+                lapInfants: '<%= lapInfants %>'
+            });
+
+            window.location.href = `/flights/checkout?fareType=${fareParam}&basePrice=${selectedBasePrice}&origin=${originParam}&destination=${destParam}&${passengerParams.toString()}`;
+        }
+
+        function resetFilters() {
+            document.getElementById('filterNonstop').checked = false;
+            document.getElementById('filterLowCO2').checked = false;
+            document.getElementById('filterHideBudget').checked = false;
+            document.querySelectorAll('.airline-filter').forEach(input => { input.checked = false; });
+            document.getElementById('filterDepartureFrom').value = '00:00';
+            document.getElementById('filterDepartureTo').value = '23:59';
+            renderFlights();
+        }
+
+        initializeAirlineFilters();
+        window.onload = renderFlights;
+    </script>
+</body>
+</html>

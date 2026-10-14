@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= pageTitle %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet OpenStreetMap CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        #hotel-map { height: 280px; width: 100%; border-radius: 1rem; z-index: 1; }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Navbar -->
+    <%- include('../partials/navbar') %>
+
+        <!-- Breadcrumb & Top Bar -->
+        <div class="bg-white border-b border-slate-200 py-3 px-4 text-xs font-medium text-slate-500">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <a href="/hotels/search?city=<%= hotel.city %>" class="hover:text-blue-600 flex items-center gap-1 font-semibold">
+                    &larr; All properties in <%= hotel.city %>
+                </a>
+                <div class="flex items-center gap-4 text-slate-600">
+                    <button class="hover:text-slate-900 flex items-center gap-1">🤍 Save</button>
+                    <button class="hover:text-slate-900 flex items-center gap-1">🔗 Share</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 w-full flex-grow">
+
+            <!-- 1. HOTEL HEADER & GALLERY GRID -->
+            <section class="space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 flex items-center gap-2">
+                            <%= hotel.name %>
+                            <span class="text-amber-400 text-sm">
+                                <% for(let i=0; i<hotel.stars; i++) { %>★<% } %>
+                            </span>
+                        </h1>
+                        <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                            📍 <%= hotel.address %>
+                            <a href="#map-section" class="text-blue-600 font-bold hover:underline ml-2">Show on map</a>
+                        </p>
+                    </div>
+
+                    <!-- Green Certificate & Modern Circular Highlight Badge -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <% hotel.ecoCertificates.forEach(cert=> { %>
+                            <span class="bg-emerald-800 text-emerald-100 text-xs font-bold px-3 py-1.5 rounded-full border border-emerald-600 shadow-sm flex items-center gap-1">
+                                🌿 <%= cert %>
+                            </span>
+                        <% }); %>
+                        
+                        <!-- High Impact Carbon Circle Badge -->
+                        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full border border-emerald-400/40 shadow-md flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-white text-emerald-700 flex items-center justify-center font-black text-[10px] shadow-sm">📉</span>
+                            <span><%= hotel.carbonRating %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Gallery Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-2 rounded-2xl overflow-hidden h-96">
+                    <div class="md:col-span-2 h-full">
+                        <img src="<%= hotel.gallery[0] %>" alt="<%= hotel.name %>" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid grid-rows-2 gap-2 h-full">
+                        <img src="<%= hotel.gallery[1] %>" alt="Interior" class="w-full h-full object-cover">
+                        <img src="<%= hotel.gallery[2] %>" alt="Pool" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid grid-rows-2 gap-2 h-full relative">
+                        <img src="<%= hotel.gallery[3] %>" alt="Room" class="w-full h-full object-cover">
+                        <div class="relative h-full">
+                            <img src="<%= hotel.gallery[4] %>" alt="Lobby" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-white font-bold text-sm cursor-pointer">
+                                📷 See All 195 Photos
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. OVERVIEW & TODAY'S BEST PRICE CARD GRID -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+                <!-- Left 2 Columns: Overview, Surroundings, Eco Initiatives -->
+                <div class="lg:col-span-2 space-y-8">
+
+                    <!-- Quick Icons Bar -->
+                    <div class="flex flex-wrap items-center gap-6 border-y border-slate-200 py-4 text-xs font-semibold text-slate-700">
+                        <span class="flex items-center gap-1.5">🍽️ Organic Restaurant</span>
+                        <span class="flex items-center gap-1.5">🏊 Outdoor Eco Pool</span>
+                        <span class="flex items-center gap-1.5">⚡ EV Charging Stations</span>
+                        <span class="flex items-center gap-1.5">📶 Free Wi-Fi</span>
+                        <span class="text-blue-600 font-bold cursor-pointer">+5 more</span>
+                    </div>
+
+                    <!-- Rating Score Banner -->
+                    <div class="bg-blue-50/80 border border-blue-200 rounded-2xl p-4 flex items-center gap-4">
+                        <div class="bg-blue-600 text-white font-black text-2xl px-3.5 py-2 rounded-xl">
+                            <%= hotel.rating %>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">Great • <%= hotel.reviewsCount.toLocaleString() %> verified reviews</div>
+                            <p class="text-xs text-slate-600 mt-0.5"><%= hotel.reviewQuote %></p>
+                        </div>
+                    </div>
+
+                    <!-- 🌱 CRITICAL SECTION: ECO & SUSTAINABILITY INITIATIVES (100% English & Modern Circle Badges) -->
+                    <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 text-white rounded-2xl p-6 sm:p-7 space-y-6 border border-emerald-700/60 shadow-xl relative overflow-hidden">
+                        
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-emerald-800/80 pb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-xl text-emerald-300">
+                                    🌿
+                                </div>
+                                <div>
+                                    <h3 class="font-extrabold text-lg text-emerald-300 tracking-tight">
+                                        Verified Low-Carbon Property
+                                    </h3>
+                                    <p class="text-xs text-emerald-200/80">Certified under HCMI & GSTC Global Sustainability Standards</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-emerald-800/80 text-emerald-200 px-3 py-1 rounded-full font-bold border border-emerald-600/50">
+                                HCMI Certified
+                            </span>
+                        </div>
+
+                        <!-- Highlights Banner with Green Circle Badges -->
+                        <% if (hotel.carbonMetrics) { %>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                
+                                <!-- Circle Metric 1: Actual Carbon Footprint -->
+                                <div class="bg-slate-900/80 border border-emerald-700/50 rounded-2xl p-4 flex items-center gap-3.5 shadow-md">
+                                    <div class="w-13 h-13 min-w-[52px] h-[52px] rounded-full bg-emerald-950 border-2 border-emerald-500 text-emerald-400 flex flex-col items-center justify-center font-black text-xs shadow-inner">
+                                        <span class="text-sm font-extrabold leading-none"><%= hotel.carbonMetrics.actualCO2PerNight %></span>
+                                        <span class="text-[8px] uppercase text-emerald-300/80">kg</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-300/90">Actual Carbon Footprint</p>
+                                        <p class="text-xs text-slate-300 mt-0.5"><strong class="text-white font-bold"><%= hotel.carbonMetrics.actualCO2PerNight %> kg CO₂e</strong> / room night</p>
+                                    </div>
+                                </div>
+
+                                <!-- Circle Metric 2: Carbon Reduced vs Avg -->
+                                <div class="bg-slate-900/80 border border-emerald-500/60 rounded-2xl p-4 flex items-center gap-3.5 shadow-md relative overflow-hidden">
+                                    <div class="absolute -right-2 -bottom-2 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
+                                    <div class="w-13 h-13 min-w-[52px] h-[52px] rounded-full bg-emerald-500 text-slate-950 flex flex-col items-center justify-center font-black text-xs shadow-lg border-2 border-emerald-300">
+                                        <span class="text-sm font-black leading-none">-<%= hotel.carbonMetrics.savingPercentage %>%</span>
+                                        <span class="text-[8px] uppercase font-bold text-slate-900">Saved</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-300">CO₂ Reduced vs Average</p>
+                                        <p class="text-xs text-emerald-200 mt-0.5"><strong class="text-white font-extrabold text-sm"><%= hotel.carbonMetrics.carbonSavedPerNight %> kg</strong> CO₂ saved per night</p>
+                                    </div>
+                                </div>
+
+                                <!-- Circle Metric 3: Trees Equivalent -->
+                                <div class="bg-slate-900/80 border border-emerald-700/50 rounded-2xl p-4 flex items-center gap-3.5 shadow-md">
+                                    <div class="w-13 h-13 min-w-[52px] h-[52px] rounded-full bg-emerald-900/80 border-2 border-emerald-400 text-emerald-200 flex flex-col items-center justify-center font-black text-xs">
+                                        <span class="text-base">🌳</span>
+                                        <span class="text-[9px] font-bold leading-none text-emerald-300"><%= hotel.carbonMetrics.treesEquiv %></span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-300/90">Environmental Impact</p>
+                                        <p class="text-xs text-slate-300 mt-0.5">Equivalent to planting <strong class="text-emerald-300 font-bold"><%= hotel.carbonMetrics.treesEquiv %> trees</strong> / year</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        <% } else { %>
+                            <!-- Fallback layout if not synced yet -->
+                            <div class="bg-slate-900/80 border border-emerald-500/60 rounded-2xl p-4 flex items-center gap-4">
+                                <div class="w-14 h-14 rounded-full bg-emerald-500 text-slate-950 flex flex-col items-center justify-center font-black shadow-lg border-2 border-emerald-300 shrink-0">
+                                    <span class="text-base font-black leading-none">📉</span>
+                                    <span class="text-[8px] uppercase font-bold tracking-tight">Eco Stay</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-300">Carbon Efficiency Rating</p>
+                                    <p class="text-sm font-extrabold text-white mt-0.5"><%= hotel.carbonRating %></p>
+                                    <p class="text-xs text-emerald-200/80 mt-1">Verified low greenhouse gas emissions per guest night.</p>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <p class="text-xs text-emerald-100/90 leading-relaxed pt-1">
+                            This property adheres to international GSTC standards, actively minimizing water waste,
+                            implementing 100% renewable energy sourcing, and upholding zero single-use plastic policies across all guest rooms.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+                            <div class="bg-emerald-900/50 p-3.5 rounded-xl border border-emerald-800/80 space-y-1">
+                                <span class="font-bold text-emerald-300 block">⚡ Solar & Energy Efficiency</span>
+                                <span class="text-emerald-200 text-[11px]">In-room smart HVAC sensors & solar panels reduce energy consumption by 40%.</span>
+                            </div>
+                            <div class="bg-emerald-900/50 p-3.5 rounded-xl border border-emerald-800/80 space-y-1">
+                                <span class="font-bold text-emerald-300 block">💧 Water Conservation & Refills</span>
+                                <span class="text-emerald-200 text-[11px]">Filtered glass bottle refill stations on every floor. Low-flow showerheads installed.</span>
+                            </div>
+                            <div class="bg-emerald-900/50 p-3.5 rounded-xl border border-emerald-800/80 space-y-1">
+                                <span class="font-bold text-emerald-300 block">🥗 Local Farm-to-Table Dining</span>
+                                <span class="text-emerald-200 text-[11px]">Breakfast menu sources 85% of fresh ingredients from local organic Thai farms.</span>
+                            </div>
+                            <div class="bg-emerald-900/50 p-3.5 rounded-xl border border-emerald-800/80 space-y-1">
+                                <span class="font-bold text-emerald-300 block">♻️ Zero Single-Use Plastics</span>
+                                <span class="text-emerald-200 text-[11px]">Comprehensive composting program & 100% plastic-free organic amenities.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Section -->
+                    <div id="map-section" class="space-y-3">
+                        <h3 class="font-bold text-slate-900 text-base">Location & Map</h3>
+                        <div id="hotel-map" class="shadow-sm border border-slate-200"></div>
+
+                        <div class="grid grid-cols-2 gap-3 text-xs text-slate-600 pt-2">
+                            <div class="space-y-1">
+                                <p class="font-bold text-slate-800">Nearby Transit & Landmarks:</p>
+                                <p>🚆 MRT / BTS Station: <%= hotel.surroundings.transit %></p>
+                                <p>🏟️ Recreation: <%= hotel.surroundings.landmark %></p>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="font-bold text-slate-800">Airport Distance:</p>
+                                <p>✈️ Suvarnabhumi Airport (BKK): <%= hotel.surroundings.airport %></p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Today's Best Price Box -->
+                <div class="lg:col-span-1 sticky top-24">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-lg space-y-4 border-t-4 border-t-blue-600">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                                    Today's Best Price
+                                </span>
+                                <h4 class="font-extrabold text-slate-900 text-lg mt-2"><%= recommendedRoom.name %></h4>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1 text-xs">
+                            <p class="font-bold text-slate-800">🛏️ <%= stayInfo.checkInLabel %> – <%= stayInfo.checkOutLabel %> · <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %></p>
+                            <p class="font-bold text-slate-800">👤 <%= stayInfo.guestSummary %> · 🏨 <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %></p>
+                            <p class="text-emerald-700 font-semibold">🌱 <%= recommendedPlan.breakfast %></p>
+                            <p class="text-slate-500">⚡ Instant Confirmation • Pay at Hotel</p>
+                        </div>
+
+                        <div class="border-t border-slate-100 pt-3 flex justify-between items-end">
+                            <div>
+                                <span class="text-xs text-slate-400 line-through">฿<%= recommendedOriginalPrice.toLocaleString() %></span>
+                                <div class="text-3xl font-black text-blue-600">฿<%= recommendedPrice.toLocaleString() %></div>
+                                <span class="text-[10px] text-slate-400">Total for <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %> × <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %>, incl. taxes: ฿<%= recommendedTotal.toLocaleString() %></span>
+                            </div>
+                        </div>
+
+                        <a href="#choose-room" class="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm py-3 rounded-xl transition shadow">
+                            More Room Options
+                        </a>
+
+                        <p class="text-[11px] text-center text-slate-400 font-semibold">✔ We Price Match Guarantee</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 3. CHOOSE YOUR ROOM -->
+            <section id="choose-room" class="space-y-6 pt-6 border-t border-slate-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-extrabold text-slate-900">Choose your room</h2>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+                    <button class="bg-blue-600 text-white px-3 py-1.5 rounded-xl shadow-sm">All Plans</button>
+                    <button class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3 py-1.5 rounded-xl">🍴 Breakfast included</button>
+                    <button class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3.5 py-1.5 rounded-xl">⚡ Free Cancellation</button>
+                    <button class="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3.5 py-1.5 rounded-xl">💳 Pay at Hotel</button>
+                </div>
+
+                <!-- Room Grid Layout -->
+                <div class="space-y-6">
+                    <% hotel.rooms.forEach((room, roomIndex) => { %>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-4">
+                            
+                            <div class="p-5 border-b lg:border-b-0 lg:border-r border-slate-200 bg-slate-50/50 space-y-3 flex flex-col justify-between">
+                                <div class="space-y-3">
+                                    <div class="relative rounded-xl overflow-hidden h-40">
+                                        <img src="<%= room.image %>" alt="<%= room.name %>" class="w-full h-full object-cover">
+                                        <span class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                                            📷 <%= room.photoCount || 5 %>
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <h3 class="font-bold text-base text-slate-900"><%= room.name %></h3>
+                                        <button type="button" class="text-slate-400 text-xs hover:text-blue-600 mt-0.5">Room Details ℹ️</button>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-y-2 text-xs text-slate-600 font-medium pt-1">
+                                        <div class="flex items-center gap-1.5"><span>🛏️</span> <span><%= room.bed %></span></div>
+                                        <div class="flex items-center gap-1.5"><span>🏙️</span> <span><%= room.view || 'City view' %></span></div>
+                                        <div class="flex items-center gap-1.5"><span>📐</span> <span><%= room.size %></span></div>
+                                        <div class="flex items-center gap-1.5"><span>🛁</span> <span>Bathtub</span></div>
+                                        <div class="flex items-center gap-1.5"><span>🚭</span> <span>Non-smoking</span></div>
+                                        <div class="flex items-center gap-1.5"><span>📶</span> <span>Free Wi-Fi</span></div>
+                                        <div class="flex items-center gap-1.5 col-span-2 text-emerald-700 font-semibold"><span>🌿</span> <span><%= room.ecoFeature || 'Zero Single-use Plastic' %></span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="lg:col-span-3 p-4 grid grid-cols-1 md:grid-cols-3 gap-3 bg-white">
+                                <% if (room.plans && room.plans.length > 0) { %>
+                                    <% room.plans.forEach((plan, planIndex) => { %>
+                                        <% const bookingMultiplier = stayInfo.rooms * stayInfo.nights; %>
+                                        <% const bookingPrice = plan.price * bookingMultiplier; %>
+                                        <% const bookingTotal = plan.totalWithTaxes * bookingMultiplier; %>
+                                        <% const bookingOriginal = (plan.priceOriginal || plan.price) * bookingMultiplier; %>
+                                        <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-blue-500 transition space-y-4">
+                                            <div class="space-y-3">
+                                                <% if (plan.title) { %>
+                                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded w-fit block <%= plan.isFreeCancel ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-700' %>">
+                                                        <%= plan.title %>
+                                                    </span>
+                                                <% } %>
+
+                                                <div class="space-y-1.5 text-xs text-slate-700">
+                                                    <div class="flex items-start gap-1.5">
+                                                        <span class="text-slate-400">🍴</span>
+                                                        <span class="<%= plan.breakfast.includes('Includes') ? 'text-emerald-700 font-bold' : 'text-slate-600' %>">
+                                                            <%= plan.breakfast %>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="flex items-start gap-1.5">
+                                                        <span class="<%= plan.isFreeCancel ? 'text-emerald-600 font-bold' : 'text-slate-400' %>">
+                                                            <%= plan.isFreeCancel ? '✔' : '✖' %>
+                                                        </span>
+                                                        <span class="<%= plan.isFreeCancel ? 'text-emerald-700 font-bold' : 'text-slate-500' %>">
+                                                            <%= plan.cancellation %>
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="flex items-start gap-1.5">
+                                                        <span class="text-slate-400">💳</span>
+                                                        <span class="text-slate-600"><%= plan.payment %></span>
+                                                    </div>
+
+                                                    <div class="flex items-start gap-1.5">
+                                                        <span class="text-slate-400">👤</span>
+                                                        <span class="text-slate-600"><%= stayInfo.guestSummary %> · rate × <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="pt-3 border-t border-slate-100 space-y-2">
+                                                <% if (plan.discountTag) { %>
+                                                    <span class="bg-rose-50 text-rose-600 border border-rose-200 text-[10px] font-bold px-2 py-0.5 rounded">
+                                                        <%= plan.discountTag %>
+                                                    </span>
+                                                <% } %>
+
+                                                <div>
+                                                    <div class="flex items-baseline gap-1.5">
+                                                        <span class="text-2xl font-black text-blue-600">฿<%= bookingPrice.toLocaleString() %></span>
+                                                        <% if (plan.priceOriginal) { %>
+                                                            <span class="text-xs text-slate-400 line-through">฿<%= bookingOriginal.toLocaleString() %></span>
+                                                        <% } %>
+                                                    </div>
+                                                    <span class="text-[10px] text-slate-400 block">Total · <%= stayInfo.rooms %> room<%= stayInfo.rooms === 1 ? '' : 's' %> × <%= stayInfo.nights %> night<%= stayInfo.nights === 1 ? '' : 's' %> (incl. taxes): ฿<%= bookingTotal.toLocaleString() %></span>
+                                                </div>
+
+                                                <a href="/hotels/checkout?id=<%= hotel.id %>&roomIndex=<%= roomIndex %>&planIndex=<%= planIndex %>&<%= stayInfo.queryString %>" class="block text-center w-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 rounded-xl transition shadow">
+                                                    Reserve
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                <% } %>
+                            </div>
+
+                        </div>
+                    <% }); %>
+                </div>
+            </section>
+
+            <!-- 4. SERVICES & AMENITIES SECTION -->
+            <section class="bg-white p-6 rounded-2xl border border-slate-200 space-y-6">
+                <h2 class="text-xl font-bold text-slate-900">Services & Amenities</h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-slate-700">
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-900 border-b pb-1">🌿 Eco Facilities</h4>
+                        <p>EV Charging Stations</p>
+                        <p>Solar Water Heaters</p>
+                        <p>Glass Bottle Water Stations</p>
+                        <p>Bicycle Rental (Free)</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-900 border-b pb-1">🏊 Pool & Wellness</h4>
+                        <p>Salt-water Swimming Pool</p>
+                        <p>Organic Spa & Massage</p>
+                        <p>Fitness Room</p>
+                        <p>Sunbathing Area</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-900 border-b pb-1">📶 Internet & Services</h4>
+                        <p>Free High-Speed Wi-Fi</p>
+                        <p>24-Hour Front Desk</p>
+                        <p>Luggage Storage</p>
+                        <p>Currency Exchange</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-900 border-b pb-1">🚘 Transportation</h4>
+                        <p>Electric Airport Transfer</p>
+                        <p>Private EV Parking (Free)</p>
+                        <p>Taxi Booking Service</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. GUEST REVIEWS SECTION -->
+            <section class="bg-white p-6 rounded-2xl border border-slate-200 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Guest Reviews</h2>
+                        <p class="text-xs text-slate-500">Verified eco-conscious guest feedback</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-3xl font-black text-blue-600"><%= hotel.rating %></span>
+                        <span class="text-xs text-slate-500">/ 10 Exceptional</span>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50/60 border border-indigo-100 p-4 rounded-xl text-xs space-y-2">
+                    <span class="font-bold text-indigo-900 flex items-center gap-1">
+                        ✨ Review summary <span class="text-[10px] text-indigo-600 font-normal">Powered by AI</span>
+                    </span>
+                    <p class="text-slate-600 leading-relaxed">
+                        Guests highly praise the hotel's eco-friendly practices, pristine cleanliness, solar-heated
+                        water, and organic breakfast spread. Convenient shuttle service to BTS train station makes
+                        low-carbon commuting effortless.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-800">👤 Emma W. (Solo Traveler)</span>
+                            <span class="bg-blue-600 text-white font-bold px-1.5 py-0.5 rounded text-[10px]">9.5/10</span>
+                        </div>
+                        <p class="text-slate-600">"Loved the zero-plastic policy! The water refill station on my floor was super convenient. Beautiful green rooftop garden."</p>
+                        <span class="text-[10px] text-slate-400 block">Posted October 2026</span>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-800">👤 Tanawat K. (Business Traveler)</span>
+                            <span class="bg-blue-600 text-white font-bold px-1.5 py-0.5 rounded text-[10px]">9.0/10</span>
+                        </div>
+                        <p class="text-slate-600">"Great EV charging facility in the parking lot. Excellent organic coffee at breakfast. Very quiet and comfortable room."</p>
+                        <span class="text-[10px] text-slate-400 block">Posted September 2026</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. HOTEL CONTACT & SUPPORT BAR -->
+            <section class="bg-emerald-900 text-white p-6 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 shadow-md">
+                <div class="space-y-1 text-center md:text-left">
+                    <h3 class="font-bold text-base text-emerald-200">Hotel Contact & 24/7 Green Support Desk</h3>
+                    <p class="text-xs text-emerald-100">Need special eco-amenities or assistance with your booking?</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 text-xs font-bold">
+                    <a href="tel:+6621234567" class="bg-white text-emerald-900 hover:bg-emerald-50 px-4 py-2.5 rounded-xl transition">
+                        📞 Call Hotel (+66 2 123 4567)
+                    </a>
+                    <a href="#" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2.5 rounded-xl border border-emerald-500 transition">
+                        💬 Live Eco-Support Chat
+                    </a>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <%- include('../partials/footer') %>
+
+        <!-- Leaflet OpenStreetMap Initialization Script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const lat = <%= hotel.lat %>;
+                const lng = <%= hotel.lng %>;
+                const hotelName = "<%= hotel.name %>";
+
+                const map = L.map('hotel-map').setView([lat, lng], 15);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                L.marker([lat, lng]).addTo(map)
+                    .bindPopup('<b>' + hotelName + '</b><br>🌿 Certified Eco Property')
+                    .openPopup();
+            });
+        </script>
+
+</body>
+
+</html>
